@@ -1,6 +1,6 @@
 package SpaceShip;
 
-import java.util.ArrayList; // structures extensibles
+import java.util.ArrayList;
 import java.util.List;
 
 import org.newdawn.slick.BasicGame;
@@ -11,229 +11,203 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.geom.Polygon;
-
+ 
 public class SpaceShip extends BasicGame {
 
-    private Image background;
-    private Image background2;
-    private Image background3;
-    private Image background4;
+    class Vec2D {
+	float x, y;
+    	public Vec2D(float x, float y) { this.x = x; this.y = y; }
+    }
     
-    private Image[] bgList = new Image[4];
-    
-    private Image spaceship;
-    float spaceshipX = 100;
-    float spaceshipY = 100;
-    float spaceshipHeight = 50;
-    float spaceshipDx = 0.5F;
-    float spaceshipDy = 0.5F;
-    private Image sampleEnemy;
-    private Image sampleFire;
-    private float bgpos = 0;
+    Vec2D winSize;
+    int score = 0;
 
+    Image skyImage;
+    Vec2D skyPos = new Vec2D(0,0);
+    float skySpeed = 0.05F;
+
+    Image shipImage;
+    Vec2D shipPos;
+    Vec2D shipSize = new Vec2D(50,50);
+    float shipSpeed = 0.5F;
+
+    Image bombImage;
+    Vec2D bombSize = new Vec2D(40,40);
+    float bombStage = 0; 
+    float bombSpeed = 0.25F;
+    float bombWait = 900;
+    float bombTime = 0;
+    List<Vec2D> activeBombs = new ArrayList<Vec2D>();
+
+    Image fireImage;
+    Vec2D fireSize = new Vec2D(10,5);
+    float fireSpeed = 0.5F;
+    float fireWait = 100;
+    float fireTime = 0;
+    List<Vec2D> activeFires;
+    
     public SpaceShip() {
         super("SpaceShip");
     }
     
     @Override
     public void init(GameContainer container) throws SlickException {
-    	background = new Image("data/background.png");
-        background2 = new Image("data/background2.png");
-        background3 = new Image("data/background3.png");
-        background4 = new Image("data/background4.png");
-        
-        bgList[0] = 
-        
-    	spaceship = new Image("data/spaceship.png");
-    	sampleEnemy = new Image("data/enemy.png");
-    	sampleFire = new Image("data/fire.png");
-	activeFireLocations = new ArrayList<SpaceShip.Location>();
+	winSize = new Vec2D(container.getWidth(), container.getHeight());
+        shipPos = new Vec2D(0, 0.5F * (winSize.y - shipSize.y));
+    	skyImage = new Image("data/background.png");
+    	shipImage = new Image("data/spaceship.png");
+    	bombImage = new Image("data/enemy.png");
+    	fireImage = new Image("data/fire.png");
+	activeFires = new ArrayList<Vec2D>();
     }
 
-    float enemyEveryT = 1000;
-    float lastEnemyTime = 0;
-    float enemySpeed = 0.5F;
-	
-    float fireEveryT = 100;
-    float lastFireTime = 0;
-    float fireSpeed = 0.5F;
-    
     @Override
-    public void update(GameContainer container, int delta)
-            throws SlickException {
-        bgpos = bgpos - 1;
-        if (bgpos == -640) {
-            bgpos = 0;
+    public void update(GameContainer container, int delta) throws SlickException {
+        score += delta; // automatic score increment per frame
+        Input input = container.getInput();
+    	if(input.isKeyDown(Input.KEY_LEFT)) { // move left
+            shipPos.x = Math.max(0, shipPos.x - delta * shipSpeed);
+    	}
+    	if(input.isKeyDown(Input.KEY_RIGHT)) { // move right
+            shipPos.x = Math.min(winSize.x - shipSize.x, shipPos.x + delta * shipSpeed);
+    	}
+    	if(input.isKeyDown(Input.KEY_UP)) { // move up
+            shipPos.y = Math.max(0, shipPos.y - delta * shipSpeed);
+    	}
+    	if(input.isKeyDown(Input.KEY_DOWN)) { // move down
+            shipPos.y = Math.min(winSize.y - shipSize.y, shipPos.y + delta * shipSpeed);
+    	}
+        skyPos.x -= delta * skySpeed;
+        if(skyPos.x < -winSize.x) { // cyclic translation for sky
+            skyPos.x = 0;
         }
-    	
-    	if(container.getInput().isKeyDown(Input.KEY_LEFT)) {
-            spaceshipX -= delta * spaceshipDx;
+    	bombTime += delta; // create new bomb after some idle time
+    	if(bombTime > bombWait) {
+            createBomb(); bombTime = 0;
     	}
-    	if(container.getInput().isKeyDown(Input.KEY_RIGHT)) {
-            spaceshipX += delta * spaceshipDx;
+    	fireTime += delta; // create new fire after some idle time
+    	if(fireTime > fireWait && input.isKeyDown(Input.KEY_SPACE)) {
+	    createFire(); fireTime = 0;
     	}
-    	if(container.getInput().isKeyDown(Input.KEY_UP)) {
-            spaceshipY -= delta * spaceshipDy;
-    	}
-    	if(container.getInput().isKeyDown(Input.KEY_DOWN)) {
-            spaceshipY += delta * spaceshipDy;
-    	}
-    	
-    	lastEnemyTime += delta;
-    	if(lastEnemyTime > enemyEveryT) {
-            createEnemy();
-            lastEnemyTime = 0;
-            System.out.println("creating enemy!");
-    	}
-    	
-    	lastFireTime += delta;
-    	if(container.getInput().isKeyDown(Input.KEY_SPACE)) {
-            if(lastFireTime > fireEveryT) {
-	    	createFire();
-	    	lastFireTime = 0;
-	    	System.out.println("creating fire!");
-	    }
-    	}
-        
-    	updateEnemies(delta);
+    	updateBombs(delta);
     	updateFires(delta);
-    	killEnemiesIfNecessary();
+    	destroyBombs(delta);
+    	destroyShip(delta);
     }
 
-    private void killEnemiesIfNecessary() {
-    	List<Integer> enemiesToBeRemoved = new ArrayList<Integer>();
-    	List<Location> firesToBeRemoved = new ArrayList<SpaceShip.Location>();
-    	
-    	for(Location fireLocation: activeFireLocations) {
-            for (int enemyIndex = 0; enemyIndex < enemyLocations.size(); ++enemyIndex) {
-		Polygon firePoly = new Polygon(
-                    new float[] {
-			fireLocation.x, fireLocation.y, 
-			fireLocation.x, fireLocation.y + fireHeight, 
-			fireLocation.x + fireWidth, fireLocation.y + fireHeight, 
-			fireLocation.x + fireWidth, fireLocation.y 
-                    }
-		);
-		Location enemyLocation = enemyLocations.get(enemyIndex);
-		Polygon enemyPoly = new Polygon(
-                    new float[] {
-			enemyLocation.x, enemyLocation.y, 
-			enemyLocation.x, enemyLocation.y + enemyHeight, 
-			enemyLocation.x + enemyWidth, enemyLocation.y + enemyHeight, 
-			enemyLocation.x + enemyWidth, enemyLocation.y 
-                    }
-		);
-				
-		if(firePoly.intersects(enemyPoly)) {
-                    enemiesToBeRemoved.add(enemyIndex);
-                    firesToBeRemoved.add(fireLocation);
-		}
+    private void createBomb() {
+    	Vec2D bomb = new Vec2D(winSize.x, winSize.y * (0.25F + 0.25F*bombStage));
+        bombStage = (bombStage + 1) % 3;
+    	activeBombs.add(bomb);
+    }
+
+    private void createFire() {
+	Vec2D fire = new Vec2D(shipPos.x + shipSize.x, shipPos.y + 0.5F*shipSize.y);
+	activeFires.add(fire);
+    }
+
+    private void updateBombs(int delta) {
+    	List<Vec2D> inactiveBombs = new ArrayList<Vec2D>();
+	for(Vec2D bomb: activeBombs) {
+            bomb.x -= delta * bombSpeed;
+            if(bomb.x < 0) {
+                inactiveBombs.add(bomb);
+                score -= 1000*delta; // score malus for missed bomb
             }
-    	}
-    	
-    	activeFireLocations.removeAll(firesToBeRemoved);
-    	for(Integer enemyIndex: enemiesToBeRemoved) {
-            activeEnemies.remove((int)enemyIndex);
-            enemyLocations.remove((int)enemyIndex);
-            System.out.println("killed one!");
-    	}
+	}
+	activeBombs.removeAll(inactiveBombs);
     }
 
     private void updateFires(int delta) {
-    	List<Location> toBeRemoved = new ArrayList<SpaceShip.Location>();
-    	
-    	for(Location fl: activeFireLocations) {
-            fl.x += delta * fireSpeed;
-            if(fl.x > windowWidth) {
-    		toBeRemoved.add(fl);
+    	List<Vec2D> inactiveFires = new ArrayList<Vec2D>();
+    	for(Vec2D fire: activeFires) {
+            fire.x += delta * fireSpeed;
+            if(fire.x > winSize.x) {
+    		inactiveFires.add(fire);
+                score -= 100*delta; // score malus for useless fire
             }
     	}
+    	activeFires.removeAll(inactiveFires);
+    }
+
+    private void destroyBombs(int delta) {
+    	List<Vec2D> inactiveBombs = new ArrayList<Vec2D>();
+    	List<Vec2D> inactiveFires = new ArrayList<Vec2D>();
     	
-    	activeFireLocations.removeAll(toBeRemoved);
-    }
-
-    private void updateEnemies(int delta) {
-    	List<Integer> toBeRemoved = new ArrayList<Integer>();
-	for(int i = 0; i < activeEnemies.size(); ++i) {
-            enemyLocations.get(i).x -= enemySpeed * delta;
-            if(enemyLocations.get(i).x < 0) {
-                toBeRemoved.add(i);
+    	for(Vec2D fire: activeFires) {
+            Polygon firePoly = new Polygon(
+                new float[] {
+                    fire.x, fire.y,
+                    fire.x, fire.y + fireSize.y, 
+                    fire.x + fireSize.x, fire.y + fireSize.y,
+                    fire.x + fireSize.x, fire.y 
+                }
+            );
+            for(Vec2D bomb: activeBombs) {
+		Polygon bombPoly = new Polygon(
+                    new float[] {
+			bomb.x, bomb.y,
+                        bomb.x, bomb.y + bombSize.y, 
+			bomb.x + bombSize.x, bomb.y + bombSize.y, 
+			bomb.x + bombSize.x, bomb.y 
+                    }
+		);
+		if(firePoly.intersects(bombPoly)) {
+                    inactiveBombs.add(bomb);
+                    inactiveFires.add(fire);
+                    score += 2000 * delta; // bonus score for destroyed bomb
+		}
             }
-	}
-		
-	for(Integer i: toBeRemoved) {
-            activeEnemies.remove((int)i);
-            enemyLocations.remove((int)i);
-	}
-
+    	}
+    	activeFires.removeAll(inactiveFires);
+    	activeBombs.removeAll(inactiveBombs);
     }
 
-    List<Image> activeEnemies = new ArrayList<Image>();
-    
-    class Location {
-    	public Location(float x, float y) {
-            this.x = x;
-            this.y = y;
+    private void destroyShip(int delta) {
+        Polygon shipPoly = new Polygon(
+            new float[] {
+                shipPos.x, shipPos.y,
+                shipPos.x, shipPos.y + shipSize.y, 
+                shipPos.x + shipSize.x, shipPos.y + shipSize.y,
+                shipPos.x + shipSize.x, shipPos.y 
+            }
+        );
+        for(Vec2D bomb: activeBombs) {
+            Polygon bombPoly = new Polygon(
+                new float[] {
+                    bomb.x, bomb.y,
+                    bomb.x, bomb.y + bombSize.y, 
+                    bomb.x + bombSize.x, bomb.y + bombSize.y, 
+                    bomb.x + bombSize.x, bomb.y 
+                }
+            );
+            if(shipPoly.intersects(bombPoly)) {
+                activeBombs.remove(bomb);
+                score -= 20000 * delta; // score malus for destroyed ship
+                shipPos.x = 0; shipPos.y = 0.5F * (winSize.y - shipSize.y);
+                return;
+            }
         }
-	float x;
-    	float y;
+        
     }
     
-    List<Location> enemyLocations = new ArrayList<Location>();
-    
-    float highEnemySpawnY = 100;
-    float lowEnemySpawnY = 300;
-    boolean lastEnemyWasHigh;
-    private int windowWidth;
-    private List<Location> activeFireLocations;
-    private float spaceshipWidth = 50;
-    private float enemyWidth = 40;
-    private float enemyHeight = 40;
-    private float fireWidth = 10;
-    private float fireHeight = 5;
-    
-    private void createFire() {
-	Location newFireLocation = new Location(spaceshipX + spaceshipWidth, spaceshipY + spaceshipHeight * .5f);
-	activeFireLocations.add(newFireLocation);
-    }
-
-    private void createEnemy() {
-    	Image newEnemy = sampleEnemy.copy();
-    	Location newEnemyLocation = new Location(windowWidth, 100);
-    	if(lastEnemyWasHigh) {
-            lastEnemyWasHigh = false;
-            newEnemyLocation.y = lowEnemySpawnY;
-    	} else {
-            lastEnemyWasHigh = true;
-            newEnemyLocation.y = highEnemySpawnY;
-    	}
-    	
-    	activeEnemies.add(newEnemy);
-    	enemyLocations.add(newEnemyLocation);
-    }
-
     @Override
-    public void render(GameContainer container, Graphics g)
-            throws SlickException {
-	windowWidth = container.getWidth();
-	//draw the background
-    	background.draw(bgpos, 0);
-    	// draw the spaceship
-	spaceship.draw(spaceshipX, spaceshipY, spaceshipWidth, spaceshipHeight);
-	// draw all the enemies
-	for(int i = 0; i < activeEnemies.size(); ++i) {
-            activeEnemies.get(i).draw(enemyLocations.get(i).x, enemyLocations.get(i).y, enemyWidth, enemyHeight);
+    public void render(GameContainer container, Graphics g) throws SlickException {
+    	skyImage.draw(skyPos.x, skyPos.y, winSize.x, winSize.y);
+    	skyImage.draw(skyPos.x + winSize.x, skyPos.y, winSize.x, winSize.y);
+	shipImage.draw(shipPos.x, shipPos.y, shipSize.x, shipSize.y);
+	for(Vec2D bomb: activeBombs) {
+            bombImage.draw(bomb.x, bomb.y, bombSize.x, bombSize.y);
 	}
-        // draw all the fires
-	for(Location fl: activeFireLocations) {
-            sampleFire.draw(fl.x, fl.y, fireWidth, fireHeight);
+	for(Vec2D fire: activeFires) {
+            fireImage.draw(fire.x, fire.y, fireSize.x, fireSize.y);
 	}
+        g.drawString("Score = " + String.valueOf(score), 0.75F*winSize.x, 10);
     }
 
     public static void main(String[] args) {
         try {
             AppGameContainer app = new AppGameContainer(new SpaceShip());
-            app.setDisplayMode(640, 400, false);
             app.start();
         } catch (SlickException e) {
             e.printStackTrace();
