@@ -24,7 +24,7 @@ public class Play extends BasicGameState {
     Vec2D bgPos = new Vec2D(0,0);
     int bgCount = 0;
     
-    float bgSpeed = 0.5F; // vitesse
+    float bgSpeed = 0.25F; // vitesse
     
     public Play(int state) {
         
@@ -33,13 +33,13 @@ public class Play extends BasicGameState {
     public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
         winSize = new Vec2D(gc.getWidth(), gc.getHeight());
         
-        blue   = new Image("res/blue.png");
-        red    = new Image("res/red.png");
-        green  = new Image("res/green.png");
-        yellow = new Image("res/yellow.png");
-        pink   = new Image("res/pink.png");
-        grey   = new Image("res/grey.png");
-        purple = new Image("res/purple.png");
+        blue   = new Image("res/bg-blue.png");
+        red    = new Image("res/bg-red.png");
+        green  = new Image("res/bg-green.png");
+        yellow = new Image("res/bg-yellow.png");
+        pink   = new Image("res/bg-pink.png");
+        grey   = new Image("res/bg-grey.png");
+        purple = new Image("res/bg-purple.png");
         
         bgBlock.add(blue);
         bgBlock.add(red);
