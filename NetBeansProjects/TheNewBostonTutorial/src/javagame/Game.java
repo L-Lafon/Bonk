@@ -5,7 +5,7 @@ import org.newdawn.slick.state.*;
 
 public class Game extends StateBasedGame {
     
-    public static final String gamename = "TheNewBoston Tutorial";
+    public static final String gamename = "RUNNER";
     public static final int menu = 0;
     public static final int play = 1;
 
@@ -25,7 +25,7 @@ public class Game extends StateBasedGame {
         AppGameContainer appgc;
         try {
             appgc = new AppGameContainer(new Game(gamename));
-            appgc.setDisplayMode(640, 360, false);
+            appgc.setDisplayMode(640, 480, false);
             appgc.start();
         }
         catch(SlickException e) {
