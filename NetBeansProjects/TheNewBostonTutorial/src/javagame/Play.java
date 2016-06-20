@@ -24,7 +24,7 @@ public class Play extends BasicGameState {
     Vec2D bgPos = new Vec2D(0,0);
     int bgCount = 0;
     
-    float bgSpeed = 0.05F; // vitesse
+    float bgSpeed = 0.5F; // vitesse
     
     public Play(int state) {
         
@@ -54,10 +54,25 @@ public class Play extends BasicGameState {
     public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
         // g.drawString("this is the Play State!", 100, 100);
         bgBlock.get(bgCount).draw(bgPos.x,bgPos.y);
+        if (bgCount < 7) {
+            bgBlock.get(bgCount + 1).draw(winSize.x + bgPos.x,bgPos.y);
+        }
+        else {
+            bgBlock.get(0).draw(winSize.x + bgPos.x,bgPos.y);
+        }
+        
+        
     }
     
     public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
         bgPos.x -= delta * bgSpeed;
+        if (bgPos.x < -winSize.x) {
+            bgPos.x = 0;
+            bgCount += 1;
+            if (bgCount == 7) {
+                bgCount = 0;
+            }
+        }
     }
     
     public int getID() {
