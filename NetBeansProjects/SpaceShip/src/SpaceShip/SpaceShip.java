@@ -57,10 +57,10 @@ public class SpaceShip extends BasicGame {
 	winSize = new Vec2D(container.getWidth(), container.getHeight());
         shipPos = new Vec2D(0, 0.5F * (winSize.y - shipSize.y));
         
-    	skyImage = new Image("data/background.png");
-        sky2Image = new Image("data/background2.png");
-        sky3Image = new Image("data/background3.png");
-        sky4Image = new Image("data/background4.png");
+    	skyImage = new Image("data/bg.png");
+        sky2Image = new Image("data/bg2.png");
+        sky3Image = new Image("data/bg3.png");
+        sky4Image = new Image("data/bg4.png");
         
     	shipImage = new Image("data/spaceship.png");
     	bombImage = new Image("data/enemy.png");
