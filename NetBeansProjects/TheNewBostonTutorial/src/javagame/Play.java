@@ -1,24 +1,63 @@
 package javagame;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.newdawn.slick.*;
 import org.newdawn.slick.state.*;
 
 public class Play extends BasicGameState {
+    
+    class Vec2D {
+        float x;
+        float y;
+        public Vec2D(float x, float y) {
+            this.x = x;
+            this.y = y;
+        }
+    }
+    
+    Vec2D winSize;
+    
+    Image blue,red,green,yellow,pink,grey,purple;
+    List<Image> bgBlock = new ArrayList<Image>();
+    Vec2D bgPos = new Vec2D(0,0);
+    int bgCount = 0;
+    
+    float bgSpeed = 0.05F; // vitesse
     
     public Play(int state) {
         
     }
     
     public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
+        winSize = new Vec2D(gc.getWidth(), gc.getHeight());
+        
+        blue   = new Image("res/blue.png");
+        red    = new Image("res/red.png");
+        green  = new Image("res/green.png");
+        yellow = new Image("res/yellow.png");
+        pink   = new Image("res/pink.png");
+        grey   = new Image("res/grey.png");
+        purple = new Image("res/purple.png");
+        
+        bgBlock.add(blue);
+        bgBlock.add(red);
+        bgBlock.add(green);
+        bgBlock.add(yellow);
+        bgBlock.add(blue);
+        bgBlock.add(pink);
+        bgBlock.add(pink);
         
     }
     
     public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
-        g.drawString("this is the Play State!", 100, 100);
+        // g.drawString("this is the Play State!", 100, 100);
+        bgBlock.get(bgCount).draw(bgPos.x,bgPos.y);
     }
     
     public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
-        
+        bgPos.x -= delta * bgSpeed;
     }
     
     public int getID() {
