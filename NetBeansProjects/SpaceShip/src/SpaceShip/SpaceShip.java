@@ -21,8 +21,10 @@ public class SpaceShip extends BasicGame {
     
     Vec2D winSize;
     int score = 0;
+    
+    int bgcounter = 0;
 
-    Image skyImage;
+    Image skyImage;Image sky2Image;Image sky3Image;Image sky4Image;
     Vec2D skyPos = new Vec2D(0,0);
     float skySpeed = 0.05F;
 
@@ -54,7 +56,12 @@ public class SpaceShip extends BasicGame {
     public void init(GameContainer container) throws SlickException {
 	winSize = new Vec2D(container.getWidth(), container.getHeight());
         shipPos = new Vec2D(0, 0.5F * (winSize.y - shipSize.y));
+        
     	skyImage = new Image("data/background.png");
+        sky2Image = new Image("data/background2.png");
+        sky3Image = new Image("data/background3.png");
+        sky4Image = new Image("data/background4.png");
+        
     	shipImage = new Image("data/spaceship.png");
     	bombImage = new Image("data/enemy.png");
     	fireImage = new Image("data/fire.png");
@@ -80,6 +87,10 @@ public class SpaceShip extends BasicGame {
         skyPos.x -= delta * skySpeed;
         if(skyPos.x < -winSize.x) { // cyclic translation for sky
             skyPos.x = 0;
+            bgcounter += 1;
+            if (bgcounter == 4) {
+                bgcounter = 0;
+            }
         }
     	bombTime += delta; // create new bomb after some idle time
     	if(bombTime > bombWait) {
@@ -193,8 +204,23 @@ public class SpaceShip extends BasicGame {
     
     @Override
     public void render(GameContainer container, Graphics g) throws SlickException {
-    	skyImage.draw(skyPos.x, skyPos.y, winSize.x, winSize.y);
-    	skyImage.draw(skyPos.x + winSize.x, skyPos.y, winSize.x, winSize.y);
+        if (bgcounter == 0) {
+            skyImage.draw(skyPos.x, skyPos.y, winSize.x, winSize.y);
+            sky2Image.draw(skyPos.x + winSize.x, skyPos.y, winSize.x, winSize.y);
+        }
+        else if (bgcounter == 1) {
+            sky2Image.draw(skyPos.x, skyPos.y, winSize.x, winSize.y);
+            sky3Image.draw(skyPos.x + winSize.x, skyPos.y, winSize.x, winSize.y);
+        }
+        else if (bgcounter == 2) {
+            sky3Image.draw(skyPos.x, skyPos.y, winSize.x, winSize.y);
+            sky4Image.draw(skyPos.x + winSize.x, skyPos.y, winSize.x, winSize.y);
+        }
+        else {
+            sky4Image.draw(skyPos.x, skyPos.y, winSize.x, winSize.y);
+            skyImage.draw(skyPos.x + winSize.x, skyPos.y, winSize.x, winSize.y);
+        }
+    	
 	shipImage.draw(shipPos.x, shipPos.y, shipSize.x, shipSize.y);
 	for(Vec2D bomb: activeBombs) {
             bombImage.draw(bomb.x, bomb.y, bombSize.x, bombSize.y);
