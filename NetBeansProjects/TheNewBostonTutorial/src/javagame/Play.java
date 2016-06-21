@@ -18,13 +18,31 @@ public class Play extends BasicGameState {
         }
     }
     
+    class Player {
+        Vec2D pos;
+        Image image;
+        float speed;
+        float timer;
+        float wait;
+        int row;
+        public Player(Image image) {
+            this.image = image;
+            this.row = 1;
+            this.pos = new Vec2D(30,160*this.row+30);
+            this.speed = 0F;
+            this.timer = 0F;
+            this.wait = 10F;            
+        }
+    }
+    
     Vec2D winSize;
     
-    
+    Player player;
+    /*
     Image charImage;
     int charPos = 1;
     float charPx = 160*charPos+30;
-    
+    */
     /*
     position verticale du perso : 30px en dessous de la limite sup du couloir
     */
@@ -56,7 +74,7 @@ public class Play extends BasicGameState {
             bgBlock.add(new Image("res/bg-"+color+".png"));
         }
         
-        charImage = new Image("res/char.png");
+        player.image = new Image("res/char.png");
         
     }
     
@@ -69,7 +87,7 @@ public class Play extends BasicGameState {
         else {
             bgBlock.get(0).draw(winSize.x + bgPos.x,bgPos.y);
         }
-        charImage.draw(30, charPx);
+        player.image.draw(30, player.pos.y);
         
     }
     
@@ -85,25 +103,16 @@ public class Play extends BasicGameState {
             }
         }
         
-        if (input.isKeyPressed(Input.KEY_UP) && charPos > 0) {
+        if (input.isKeyPressed(Input.KEY_UP) && player.row > 0) {
             System.out.println("key up");
-            charPos -= 1;
+            player.row -= 1;
         }
-        if (input.isKeyPressed(Input.KEY_DOWN) && charPos < 2) {
+        if (input.isKeyPressed(Input.KEY_DOWN) && player.row < 2) {
             System.out.println("key down");
-            charPos += 1;
+            player.row += 1;
         }
+        player.pos.y = 160*player.row+30;
         
-        if (charPx > 160*charPos+25 && charPx < 160*charPos+35) {
-            //System.out.println(charPos);
-            charPx = 160*charPos+30;
-        }
-        if (charPx < 160*charPos+30) {
-            charPx += delta * 2;
-        }
-        if (charPx > 160*charPos+30) {
-            charPx -= delta * 2;
-        }
         
     }
     
