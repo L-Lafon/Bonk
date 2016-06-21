@@ -35,22 +35,27 @@ public class Play extends BasicGameState {
         }
     }
     
+    class Bg {
+        Vec2D pos;
+        Image image;
+        int count;
+        float speed;
+        List<Image> block;
+        public Bg(Image image) {
+            this.image = image;
+            this.count = 0;
+            this.pos = new Vec2D(0,0);
+            this.block = new ArrayList<Image>();
+        }
+    }
+    
     Vec2D winSize;
     
     Player player;
-    /*
-    Image charImage;
-    int charPos = 1;
-    float charPx = 160*charPos+30;
-    */
-    /*
-    position verticale du perso : 30px en dessous de la limite sup du couloir
-    */
     
     List<Image> bgBlock = new ArrayList<Image>();
     Vec2D bgPos = new Vec2D(0,0);
     int bgCount = 0;
-    
     float bgSpeed = 0.25F; // vitesse
     
     public Play(int state) {
@@ -74,7 +79,7 @@ public class Play extends BasicGameState {
             bgBlock.add(new Image("res/bg-"+color+".png"));
         }
         
-        player.image = new Image("res/char.png");
+        player = new Player(new Image("res/char.png"));
         
     }
     
