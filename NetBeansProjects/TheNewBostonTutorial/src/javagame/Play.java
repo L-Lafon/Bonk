@@ -1,6 +1,7 @@
 package javagame;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.newdawn.slick.*;
@@ -19,7 +20,7 @@ public class Play extends BasicGameState {
     
     Vec2D winSize;
     
-    Image blue,red,green,yellow,pink,grey,purple;
+    
     Image charImage;
     int charPos = 1;
     float charPx = 160*charPos+30;
@@ -41,21 +42,19 @@ public class Play extends BasicGameState {
     public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
         winSize = new Vec2D(gc.getWidth(), gc.getHeight());
         
-        blue   = new Image("res/bg-blue.png");
-        red    = new Image("res/bg-red.png");
-        green  = new Image("res/bg-green.png");
-        yellow = new Image("res/bg-yellow.png");
-        pink   = new Image("res/bg-pink.png");
-        grey   = new Image("res/bg-grey.png");
-        purple = new Image("res/bg-purple.png");
+        List<String> colors = Arrays.asList("blue",
+                                            "red",
+                                            "green",
+                                            "yellow",
+                                            "blue",
+                                            "pink",
+                                            "pink");
         
-        bgBlock.add(blue);
-        bgBlock.add(red);
-        bgBlock.add(green);
-        bgBlock.add(yellow);
-        bgBlock.add(blue);
-        bgBlock.add(pink);
-        bgBlock.add(pink);
+        
+        
+        for (String color : colors) {
+            bgBlock.add(new Image("res/bg-"+color+".png"));
+        }
         
         charImage = new Image("res/char.png");
         
