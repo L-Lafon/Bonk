@@ -22,6 +22,7 @@ public class Play extends BasicGameState {
     Image blue,red,green,yellow,pink,grey,purple;
     Image charImage;
     int charPos = 1;
+    float charPx = 160*charPos+30;
     
     /*
     position verticale du perso : 30px en dessous de la limite sup du couloir
@@ -69,7 +70,7 @@ public class Play extends BasicGameState {
         else {
             bgBlock.get(0).draw(winSize.x + bgPos.x,bgPos.y);
         }
-        charImage.draw(30, 160*charPos+30);
+        charImage.draw(30, charPx);
         
     }
     
@@ -93,6 +94,18 @@ public class Play extends BasicGameState {
             System.out.println("key down");
             charPos += 1;
         }
+        
+        if (charPx > 160*charPos+25 && charPx < 160*charPos+35) {
+            //System.out.println(charPos);
+            charPx = 160*charPos+30;
+        }
+        if (charPx < 160*charPos+30) {
+            charPx += delta * 2;
+        }
+        if (charPx > 160*charPos+30) {
+            charPx -= delta * 2;
+        }
+        
     }
     
     public int getID() {
