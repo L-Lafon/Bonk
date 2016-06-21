@@ -25,13 +25,15 @@ public class Play extends BasicGameState {
         float timer;
         float wait;
         int row;
+        boolean animate;
         public Player(Image image) {
             this.image = image;
             this.row = 1;
             this.pos = new Vec2D(30,160*this.row+30);
             this.speed = 0F;
             this.timer = 0F;
-            this.wait = 10F;            
+            this.wait = 100F; 
+            this.animate = false;
         }
     }
     
@@ -84,7 +86,7 @@ public class Play extends BasicGameState {
     }
     
     public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
-        // g.drawString("this is the Play State!", 100, 100);
+        
         bgBlock.get(bgCount).draw(bgPos.x,bgPos.y);
         if (bgCount < 7) {
             bgBlock.get(bgCount + 1).draw(winSize.x + bgPos.x,bgPos.y);
@@ -92,8 +94,9 @@ public class Play extends BasicGameState {
         else {
             bgBlock.get(0).draw(winSize.x + bgPos.x,bgPos.y);
         }
-        player.image.draw(30, player.pos.y);
+        player.image.draw(player.pos.x, player.pos.y);
         
+        //g.drawString(Float.toString(player.timer), 100, 100);
     }
     
     public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
@@ -109,14 +112,35 @@ public class Play extends BasicGameState {
         }
         
         if (input.isKeyPressed(Input.KEY_UP) && player.row > 0) {
-            System.out.println("key up");
+            //System.out.println("key up");
             player.row -= 1;
+            player.animate = true;
         }
         if (input.isKeyPressed(Input.KEY_DOWN) && player.row < 2) {
-            System.out.println("key down");
+            //System.out.println("key down");
             player.row += 1;
+            player.animate=true;
         }
-        player.pos.y = 160*player.row+30;
+        if (player.animate == true) {
+            player.timer += delta;
+            // delta * 160 / player.wait
+            if (player.pos.y < 160*player.row+30) {
+                player.pos.y += 160*delta/player.wait;
+                //System.out.println("if1");
+            }
+            if (player.pos.y > 160*player.row+30) {
+                player.pos.y -= 160*delta/player.wait;
+                //System.out.println("if2");
+            }
+        }
+        if (player.timer > player.wait) {
+            //System.out.println("reset timer");
+            player.timer=0;
+            player.animate=false;
+            player.pos.y = 160*player.row+30;
+        }
+        
+        //player.pos.y = 160*player.row+30;
         
         
     }
