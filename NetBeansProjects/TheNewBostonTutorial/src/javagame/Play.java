@@ -20,6 +20,13 @@ public class Play extends BasicGameState {
     Vec2D winSize;
     
     Image blue,red,green,yellow,pink,grey,purple;
+    Image charImage;
+    int charPos = 1;
+    
+    /*
+    position verticale du perso : 30px en dessous de la limite sup du couloir
+    */
+    
     List<Image> bgBlock = new ArrayList<Image>();
     Vec2D bgPos = new Vec2D(0,0);
     int bgCount = 0;
@@ -49,6 +56,8 @@ public class Play extends BasicGameState {
         bgBlock.add(pink);
         bgBlock.add(pink);
         
+        charImage = new Image("res/char.png");
+        
     }
     
     public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
@@ -60,18 +69,29 @@ public class Play extends BasicGameState {
         else {
             bgBlock.get(0).draw(winSize.x + bgPos.x,bgPos.y);
         }
-        
+        charImage.draw(30, 160*charPos+30);
         
     }
     
     public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
         bgPos.x -= delta * bgSpeed;
+        Input input = gc.getInput();
+        
         if (bgPos.x < -winSize.x) {
             bgPos.x = 0;
             bgCount += 1;
             if (bgCount == 7) {
                 bgCount = 0;
             }
+        }
+        
+        if (input.isKeyPressed(Input.KEY_UP) && charPos > 0) {
+            System.out.println("key up");
+            charPos -= 1;
+        }
+        if (input.isKeyPressed(Input.KEY_DOWN) && charPos < 2) {
+            System.out.println("key down");
+            charPos += 1;
         }
     }
     
