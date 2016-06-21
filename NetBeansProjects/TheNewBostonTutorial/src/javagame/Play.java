@@ -96,6 +96,7 @@ public class Play extends BasicGameState {
         }
         
         if (charPx > 160*charPos+25 && charPx < 160*charPos+35) {
+            //System.out.println(charPos);
             charPx = 160*charPos+30;
         }
         if (charPx < 160*charPos+30) {
