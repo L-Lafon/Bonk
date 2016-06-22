@@ -57,19 +57,19 @@ public class Menu extends BasicGameState {
         Input input = gc.getInput();
         int xpos = Mouse.getX();
         int ypos = Mouse.getY();
-        if ((xpos > 270 && xpos < 375) && (ypos > 135 && ypos <175)) {
+        if ((xpos > 260 && xpos < 380) && (ypos > 180 && ypos <230)) {
             if (input.isMouseButtonDown(0)) {
                 sbg.enterState(1);
             }
         }
-        if ((xpos > 195 && xpos < 465) && (ypos > 75 && ypos <115)) {
+        if ((xpos > 170 && xpos < 475) && (ypos > 115 && ypos <155)) {
             if (input.isMouseButtonDown(0)) {
                 System.out.println("Instructions pressed");
             }
         }
-        if ((xpos > 165 && xpos < 495) && (ypos > 18 && ypos <58)) {
+        if ((xpos > 216 && xpos < 426) && (ypos > 48 && ypos <98)) {
             if (input.isMouseButtonDown(0)) {
-                System.out.println("Configurations pressed");
+                System.out.println("Settings pressed");
             }
         }
     }
