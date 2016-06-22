@@ -67,13 +67,8 @@ public class Play extends BasicGameState {
     public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
         winSize = new Vec2D(gc.getWidth(), gc.getHeight());
         
-        List<String> colors = Arrays.asList("blue",
-                                            "red",
-                                            "green",
-                                            "yellow",
-                                            "blue",
-                                            "pink",
-                                            "pink");
+        String[] colors = {"blue","red","green","yellow",
+                           "blue","pink","pink"};
         
         
         
