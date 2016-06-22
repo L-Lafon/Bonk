@@ -8,17 +8,17 @@ public class Menu extends BasicGameState {
     
     // public String mouse = "No input yet!";
     /*
-    Image baboon;
     int imagex = 200;
     int imagey = 200;
     */
+    Image imgMenu;
     
     public Menu(int state) {
         
     }
     
     public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
-        //baboon = new Image("res/baboon.png");
+        imgMenu = new Image("res/menu.png");
     }
     
     public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
@@ -26,11 +26,12 @@ public class Menu extends BasicGameState {
         g.drawString(mouse, 50, 50);
         g.drawRect(50, 100, 60, 120);
         Image baboon = new Image("res/baboon.png");
-        g.drawImage(baboon, 200, 130);
-        */
+        
         //g.drawImage(baboon, imagex, imagey);
         g.fillOval(75, 100, 100, 100);
         g.drawString("Play Now!", 80, 70);
+        */
+        g.drawImage(imgMenu, 0, 0);
     }
     
     public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
@@ -56,9 +57,19 @@ public class Menu extends BasicGameState {
         Input input = gc.getInput();
         int xpos = Mouse.getX();
         int ypos = Mouse.getY();
-        if ((xpos > 75 && xpos < 175) && (ypos > 160 && ypos <260)) {
+        if ((xpos > 270 && xpos < 375) && (ypos > 135 && ypos <175)) {
             if (input.isMouseButtonDown(0)) {
                 sbg.enterState(1);
+            }
+        }
+        if ((xpos > 195 && xpos < 465) && (ypos > 75 && ypos <115)) {
+            if (input.isMouseButtonDown(0)) {
+                System.out.println("Instructions pressed");
+            }
+        }
+        if ((xpos > 165 && xpos < 495) && (ypos > 18 && ypos <58)) {
+            if (input.isMouseButtonDown(0)) {
+                System.out.println("Configurations pressed");
             }
         }
     }

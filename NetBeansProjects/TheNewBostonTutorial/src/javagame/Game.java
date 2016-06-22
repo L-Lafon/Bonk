@@ -8,6 +8,8 @@ public class Game extends StateBasedGame {
     public static final String gamename = "RUNNER";
     public static final int menu = 0;
     public static final int play = 1;
+    public static final int instr = 2;
+    public static final int config = 3;
 
     public Game(String gamename) {
         super(gamename);
