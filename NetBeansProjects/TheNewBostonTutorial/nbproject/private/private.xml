@@ -3,17 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-<<<<<<< HEAD
             <file>file:/home/corentin/JavaSlick2016/NetBeansProjects/TheNewBostonTutorial/src/javagame/Game.java</file>
             <file>file:/home/corentin/JavaSlick2016/NetBeansProjects/TheNewBostonTutorial/src/javagame/Menu.java</file>
             <file>file:/home/corentin/JavaSlick2016/NetBeansProjects/TheNewBostonTutorial/src/javagame/Play.java</file>
+            <file>file:/home/corentin/JavaSlick2016/NetBeansProjects/TheNewBostonTutorial/src/javagame/Config.java</file>
             <file>file:/home/corentin/JavaSlick2016/NetBeansProjects/TheNewBostonTutorial/src/javagame/Instr.java</file>
-=======
-            <file>file:/home/lea/JavaSlick2016/NetBeansProjects/TheNewBostonTutorial/src/javagame/Game.java</file>
-            <file>file:/home/lea/JavaSlick2016/NetBeansProjects/TheNewBostonTutorial/src/javagame/Instr.java</file>
-            <file>file:/home/lea/JavaSlick2016/NetBeansProjects/TheNewBostonTutorial/src/javagame/Menu.java</file>
-            <file>file:/home/lea/JavaSlick2016/NetBeansProjects/TheNewBostonTutorial/src/javagame/Play.java</file>
->>>>>>> 5ab49c22802eec3fae64ed25c2ecf749dc814ec3
         </group>
     </open-files>
 </project-private>
