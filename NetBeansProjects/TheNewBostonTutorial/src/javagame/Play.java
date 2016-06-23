@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import java.io.*;
+
 import org.newdawn.slick.*;
 import org.newdawn.slick.state.*;
 
@@ -66,10 +68,12 @@ public class Play extends BasicGameState {
     
     public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
         winSize = new Vec2D(gc.getWidth(), gc.getHeight());
+        bgBlock.clear();
         
         String[] colors = {"blue","red","green","yellow",
                            "blue","pink","pink"};
         
+       
         
         
         for (String color : colors) {
@@ -83,7 +87,7 @@ public class Play extends BasicGameState {
     public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
         
         bgBlock.get(bgCount).draw(bgPos.x,bgPos.y);
-        if (bgCount < 7) {
+        if (bgCount < bgBlock.size()) {
             bgBlock.get(bgCount + 1).draw(winSize.x + bgPos.x,bgPos.y);
         }
         else {
@@ -91,7 +95,7 @@ public class Play extends BasicGameState {
         }
         player.image.draw(player.pos.x, player.pos.y);
         
-        //g.drawString(Float.toString(player.timer), 100, 100);
+        //g.drawString(Float.toString(bgBlock.size()), 100, 100);
     }
     
     public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
