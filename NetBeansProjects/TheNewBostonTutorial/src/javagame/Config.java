@@ -5,15 +5,10 @@
  */
 package javagame;
 
-import org.newdawn.slick.state.GameState;
-
 /**
  *
  * @author lea
  */
-class Instr implements GameState {
-
-    public Instr(int instr) {
-    }
+public class Config {
     
 }
