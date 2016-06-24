@@ -13,7 +13,6 @@ import org.newdawn.slick.state.*;
  * @author lea
  */
 public class Instr extends BasicGameState {
-<<<<<<< HEAD
     
     public Instr(int state) {
         
@@ -33,28 +32,5 @@ public class Instr extends BasicGameState {
     
     public int getID() {
         return 2;
-=======
-
-    public Instr(int instr) {
->>>>>>> 9e3c3dab22ec2314d27dd9dda475512e79357e87
     }
-    
-    public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
-        
-    }
-    
-    public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
-        
-    }
-    
-    public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
-        
-    }
-    
-    public int getID() {
-        return 2;
-    }
-    
 }
-
-
