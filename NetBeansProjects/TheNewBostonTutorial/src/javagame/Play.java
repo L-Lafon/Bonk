@@ -87,7 +87,7 @@ public class Play extends BasicGameState {
     public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
         
         bgBlock.get(bgCount).draw(bgPos.x,bgPos.y);
-        if (bgCount < bgBlock.size()) {
+        if (bgCount < 6) {
             bgBlock.get(bgCount + 1).draw(winSize.x + bgPos.x,bgPos.y);
         }
         else {
