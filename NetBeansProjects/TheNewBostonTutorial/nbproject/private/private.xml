@@ -3,11 +3,19 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+<<<<<<< HEAD
             <file>file:/home/lea/JavaSlick2016/NetBeansProjects/TheNewBostonTutorial/src/javagame/Game.java</file>
             <file>file:/home/lea/JavaSlick2016/NetBeansProjects/TheNewBostonTutorial/src/javagame/Instr.java</file>
             <file>file:/home/lea/JavaSlick2016/NetBeansProjects/TheNewBostonTutorial/src/javagame/Config.java</file>
             <file>file:/home/lea/JavaSlick2016/NetBeansProjects/TheNewBostonTutorial/src/javagame/Menu.java</file>
             <file>file:/home/lea/JavaSlick2016/NetBeansProjects/TheNewBostonTutorial/src/javagame/Play.java</file>
+=======
+            <file>file:/home/corentin/JavaSlick2016/NetBeansProjects/TheNewBostonTutorial/src/javagame/Game.java</file>
+            <file>file:/home/corentin/JavaSlick2016/NetBeansProjects/TheNewBostonTutorial/src/javagame/Menu.java</file>
+            <file>file:/home/corentin/JavaSlick2016/NetBeansProjects/TheNewBostonTutorial/src/javagame/Play.java</file>
+            <file>file:/home/corentin/JavaSlick2016/NetBeansProjects/TheNewBostonTutorial/src/javagame/Config.java</file>
+            <file>file:/home/corentin/JavaSlick2016/NetBeansProjects/TheNewBostonTutorial/src/javagame/Instr.java</file>
+>>>>>>> 9e3c3dab22ec2314d27dd9dda475512e79357e87
         </group>
     </open-files>
 </project-private>

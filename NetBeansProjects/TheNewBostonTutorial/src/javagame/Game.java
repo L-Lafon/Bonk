@@ -5,11 +5,19 @@ import org.newdawn.slick.state.*;
 
 public class Game extends StateBasedGame {
     
+<<<<<<< HEAD
     public static final String GAMENAME = "RUNNER";
     public static final int MENU = 0;
     public static final int PLAY = 1;
     public static final int INSTR = 2;
     public static final int CONFIG = 3;
+=======
+    public static final String gamename = "BONK!";
+    public static final int menu = 0;
+    public static final int play = 1;
+    public static final int instr = 2;
+    public static final int config = 3;
+>>>>>>> 9e3c3dab22ec2314d27dd9dda475512e79357e87
 
     public Game(String gamename) {
         super(gamename);
