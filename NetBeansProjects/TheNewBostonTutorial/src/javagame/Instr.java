@@ -5,15 +5,35 @@
  */
 package javagame;
 
-import org.newdawn.slick.state.GameState;
+import org.newdawn.slick.*;
+import org.newdawn.slick.state.*;
 
 /**
  *
  * @author lea
  */
-class Instr implements GameState {
-
-    public Instr(int instr) {
+public class Instr extends BasicGameState {
+    
+    public Instr(int state) {
+        
+    }
+    
+    public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
+        
+    }
+    
+    public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
+        g.drawString("instructions loul", 50, 50);
+    }
+    
+    public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
+        
+    }
+    
+    public int getID() {
+        return 2;
     }
     
 }
+
+
