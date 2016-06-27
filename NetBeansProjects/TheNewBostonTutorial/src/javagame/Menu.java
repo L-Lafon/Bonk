@@ -30,7 +30,7 @@ public class Menu extends BasicGameState {
         }
     }
     
-    Image imgMenu;
+    Image bgMenu;
     Button buttonPlay, buttonInstr, buttonSettings;
     
     public Menu(int state) {
@@ -38,7 +38,7 @@ public class Menu extends BasicGameState {
     }
     
     public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
-        imgMenu = new Image("res/title.png");
+        bgMenu = new Image("res/title.png");
         
         buttonPlay = new Button(new Image("res/Play.png"), new Image("res/PlayActive.png"),128,256,512,320);
         buttonInstr = new Button(new Image("res/Instructions.png"), new Image("res/InstructionsActive.png"),128,320,512,384);
@@ -47,7 +47,7 @@ public class Menu extends BasicGameState {
     
     public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
         
-        g.drawImage(imgMenu, 0, 0);
+        g.drawImage(bgMenu, 0, 0);
         
         if (buttonPlay.active) {
             g.drawImage(buttonPlay.imageActive, buttonPlay.x1, buttonPlay.y1);
