@@ -80,7 +80,7 @@ public class Menu extends BasicGameState {
         
         if (buttonPlay.hover(xpos, ypos)) {
             buttonPlay.active = true;
-            if (input.isMouseButtonDown(0)) {
+            if (input.isMousePressed(0)) {
                 sbg.enterState(1);
             }
         }
@@ -90,7 +90,7 @@ public class Menu extends BasicGameState {
         
         if (buttonInstr.hover(xpos, ypos)) {
             buttonInstr.active = true;
-            if (input.isMouseButtonDown(0)) {
+            if (input.isMousePressed(0)) {
                 sbg.enterState(2);
             }
         }
@@ -100,7 +100,7 @@ public class Menu extends BasicGameState {
         
         if (buttonSettings.hover(xpos, ypos)) {
             buttonSettings.active = true;
-            if (input.isMouseButtonDown(0)) {
+            if (input.isMousePressed(0)) {
                 sbg.enterState(3);
             }
         }

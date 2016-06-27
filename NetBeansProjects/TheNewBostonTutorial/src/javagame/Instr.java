@@ -72,7 +72,7 @@ public class Instr extends BasicGameState {
         
         if (buttonBack.hover(xpos, ypos)) {
             buttonBack.active = true;
-            if (input.isMouseButtonDown(0)) {
+            if (input.isMousePressed(0)) {
                 sbg.enterState(0);
             }
         }

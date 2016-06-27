@@ -97,20 +97,15 @@ public class Play extends BasicGameState {
         wall = new Wall(new Image("res/wall.png"));
         block = new Block();
         
-        String[] letters = "EJQYEBBXBQYEJYQEXJYJJXBYXQBQXE".split("");
-        
-        
-        /*
-        String[] colors = {"blue","red","green","yellow",
-                           "blue","pink","pink"};
-        */
-       
-        
+        //String[] letters = "EJQYEBBXBQYEJYQEXJYJJXBYXQBQXE".split("");
+        String[] letters = "EJQYEBBEJYJJEBEYQJE".split("");
         
         for (String letter : letters) {
-            System.out.println(letter);
-            if (letter != "X") {
+            System.out.println(letter + letter.getClass().getName() + "X".getClass().getName());
+            if (letter == "X") {
                 System.out.println("if");
+            }
+            else {
                 block.block.add(new Bg(new Image("res/bg-"+letter+".png"), false));
             }
             
@@ -123,7 +118,7 @@ public class Play extends BasicGameState {
     public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
         
         block.block.get(block.count).image.draw(block.pos.x,block.pos.y);
-        if (block.count < 6) {
+        if (block.count < block.block.size() - 1) {
             block.block.get(block.count + 1).image.draw(winSize.x + block.pos.x,block.pos.y);
         }
         else {
