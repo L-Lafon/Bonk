@@ -41,15 +41,25 @@ public class Play extends BasicGameState {
     
     class Bg {
         Vec2D pos;
-        Image image;
         int count;
         float speed;
         List<Image> block;
-        public Bg(Image image) {
-            this.image = image;
+        public Bg() {
             this.count = 0;
             this.pos = new Vec2D(0,0);
             this.block = new ArrayList<Image>();
+            this.speed = 0.25F;
+        }
+    }
+    
+    class Wall {
+        Vec2D pos;
+        Image image;
+        float speed;
+        public Wall(Image image) {
+            this.image = image;
+            this.pos = new Vec2D(640,0);
+            this.speed = 0.25F;
         }
     }
     
@@ -57,10 +67,14 @@ public class Play extends BasicGameState {
     
     Player player;
     
+    Bg bg;
+    
+    /*
     List<Image> bgBlock = new ArrayList<Image>();
     Vec2D bgPos = new Vec2D(0,0);
     int bgCount = 0;
     float bgSpeed = 0.25F; // vitesse
+    */
     
     public Play(int state) {
         
@@ -68,8 +82,7 @@ public class Play extends BasicGameState {
     
     public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
         winSize = new Vec2D(gc.getWidth(), gc.getHeight());
-        bgBlock.clear();
-        
+        bg = new Bg();
         String[] colors = {"blue","red","green","yellow",
                            "blue","pink","pink"};
         
@@ -77,7 +90,7 @@ public class Play extends BasicGameState {
         
         
         for (String color : colors) {
-            bgBlock.add(new Image("res/bg-"+color+".png"));
+            bg.block.add(new Image("res/bg-"+color+".png"));
         }
         
         player = new Player(new Image("res/char.png"));
@@ -86,27 +99,28 @@ public class Play extends BasicGameState {
     
     public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
         
-        bgBlock.get(bgCount).draw(bgPos.x,bgPos.y);
-        if (bgCount < 6) {
-            bgBlock.get(bgCount + 1).draw(winSize.x + bgPos.x,bgPos.y);
+        bg.block.get(bg.count).draw(bg.pos.x,bg.pos.y);
+        if (bg.count < 6) {
+            bg.block.get(bg.count + 1).draw(winSize.x + bg.pos.x,bg.pos.y);
         }
         else {
-            bgBlock.get(0).draw(winSize.x + bgPos.x,bgPos.y);
+            bg.block.get(0).draw(winSize.x + bg.pos.x,bg.pos.y);
         }
         player.image.draw(player.pos.x, player.pos.y);
         
-        //g.drawString(Float.toString(bgBlock.size()), 100, 100);
+        //g.drawString(Float.toString(bg.pos.x), 100, 100);
     }
     
     public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
-        bgPos.x -= delta * bgSpeed;
+        bg.pos.x -= delta * bg.speed;
+        //System.out.println(bg.pos.x);
         Input input = gc.getInput();
         
-        if (bgPos.x < -winSize.x) {
-            bgPos.x = 0;
-            bgCount += 1;
-            if (bgCount == 7) {
-                bgCount = 0;
+        if (bg.pos.x < -winSize.x) {
+            bg.pos.x = 0;
+            bg.count += 1;
+            if (bg.count == 7) {
+                bg.count = 0;
             }
         }
         
