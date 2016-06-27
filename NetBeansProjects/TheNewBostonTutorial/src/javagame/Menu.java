@@ -91,7 +91,7 @@ public class Menu extends BasicGameState {
         if (buttonInstr.hover(xpos, ypos)) {
             buttonInstr.active = true;
             if (input.isMouseButtonDown(0)) {
-                System.out.println("Instructions pressed");
+                sbg.enterState(2);
             }
         }
         else {
@@ -101,7 +101,7 @@ public class Menu extends BasicGameState {
         if (buttonSettings.hover(xpos, ypos)) {
             buttonSettings.active = true;
             if (input.isMouseButtonDown(0)) {
-                System.out.println("Settings pressed");
+                sbg.enterState(3);
             }
         }
         else {
