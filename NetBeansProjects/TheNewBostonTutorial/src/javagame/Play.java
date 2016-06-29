@@ -137,6 +137,13 @@ public class Play extends BasicGameState {
             }
         }
         
+        if (block.block.get((block.count + 1) % block.block.size()).wall) {
+            wall.pos.x = winSize.x + block.pos.x;
+        }
+        else {
+            wall.pos.x = 640;
+        }
+        
         if (input.isKeyPressed(Input.KEY_UP) && player.row > 0) {
             player.row -= 1;
             player.animate = true;
