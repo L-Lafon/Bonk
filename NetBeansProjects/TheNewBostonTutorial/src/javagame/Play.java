@@ -33,7 +33,7 @@ public class Play extends BasicGameState {
         public Player(Image image) {
             this.image = image;
             this.row = 1;
-            this.pos = new Vec2D(30,160*this.row+30);
+            this.pos = new Vec2D(30,120*(this.row+1)+10);
             this.speed = 0F;
             this.timer = 0F;
             this.wait = 100F; 
@@ -59,7 +59,7 @@ public class Play extends BasicGameState {
         List<Bg> block;
         public Block() {
             this.count = 0;
-            this.pos = new Vec2D(0,0);
+            this.pos = new Vec2D(0,120);
             this.block = new ArrayList<Bg>();
             this.speed = 0.5F;
         }
@@ -190,18 +190,18 @@ public class Play extends BasicGameState {
         
         if (player.animate == true) {
             player.timer += delta;
-            if (player.pos.y < 160*player.row+30) {
-                player.pos.y += 160*delta/player.wait;
+            if (player.pos.y < 120*(player.row+1)+10) {
+                player.pos.y += 120*delta/player.wait;
             }
-            if (player.pos.y > 160*player.row+30) {
-                player.pos.y -= 160*delta/player.wait;
+            if (player.pos.y > 120*(player.row+1)+10) {
+                player.pos.y -= 120*delta/player.wait;
             }
         }
         
         if (player.timer > player.wait) {
             player.timer=0;
             player.animate=false;
-            player.pos.y = 160*player.row+30;
+            player.pos.y = 120*(player.row+1)+10;
         }
         
         if (wall.pos.x<640) {
