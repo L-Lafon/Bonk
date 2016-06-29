@@ -81,13 +81,6 @@ public class Play extends BasicGameState {
     
     Wall wall; // Make JAVA programming great again !
     
-    /*
-    List<Image> bgBlock = new ArrayList<Image>();
-    Vec2D bgPos = new Vec2D(0,0);
-    int bgCount = 0;
-    float bgSpeed = 0.25F; // vitesse
-    */
-    
     public Play(int state) {
         
     }
@@ -97,16 +90,17 @@ public class Play extends BasicGameState {
         wall = new Wall(new Image("res/wall.png"));
         block = new Block();
         
-        //String[] letters = "EJQYEBBXBQYEJYQEXJYJJXBYXQBQXE".split("");
-        String[] letters = "EJQYEBBEJYJJEBEYQJE".split("");
+        String[] letters = "EJQYEBBXBQYEJYQEXJYJJXBYXQBQXE".split("");
+        
+        boolean nextwall = false;
         
         for (String letter : letters) {
-            System.out.println(letter + letter.getClass().getName() + "X".getClass().getName());
-            if (letter == "X") {
-                System.out.println("if");
+            if (letter.charAt(0) != 'X') {
+                block.block.add(new Bg(new Image("res/bg-"+letter+".png"), nextwall));
+                nextwall = false;
             }
             else {
-                block.block.add(new Bg(new Image("res/bg-"+letter+".png"), false));
+                nextwall = true;
             }
             
         }
@@ -128,53 +122,46 @@ public class Play extends BasicGameState {
         
         wall.image.draw(wall.pos.x, wall.pos.y);
         
-        //g.drawString(Float.toString(bg.pos.x), 100, 100);
+        g.drawString(Float.toString(block.count), 100, 100);
     }
     
     public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
         block.pos.x -= delta * block.speed;
-        //System.out.println(bg.pos.x);
         Input input = gc.getInput();
         
         if (block.pos.x < -winSize.x) {
             block.pos.x = 0;
             block.count += 1;
-            if (block.count == 7) {
+            if (block.count == block.block.size()) {
                 block.count = 0;
             }
         }
         
         if (input.isKeyPressed(Input.KEY_UP) && player.row > 0) {
-            //System.out.println("key up");
             player.row -= 1;
             player.animate = true;
         }
+        
         if (input.isKeyPressed(Input.KEY_DOWN) && player.row < 2) {
-            //System.out.println("key down");
             player.row += 1;
             player.animate=true;
         }
+        
         if (player.animate == true) {
             player.timer += delta;
-            // delta * 160 / player.wait
             if (player.pos.y < 160*player.row+30) {
                 player.pos.y += 160*delta/player.wait;
-                //System.out.println("if1");
             }
             if (player.pos.y > 160*player.row+30) {
                 player.pos.y -= 160*delta/player.wait;
-                //System.out.println("if2");
             }
         }
+        
         if (player.timer > player.wait) {
-            //System.out.println("reset timer");
             player.timer=0;
             player.animate=false;
             player.pos.y = 160*player.row+30;
         }
-        
-        //player.pos.y = 160*player.row+30;
-        
         
     }
     
