@@ -7,6 +7,7 @@ import java.util.List;
 import java.io.*;
 
 import org.newdawn.slick.*;
+import org.newdawn.slick.geom.Polygon;
 import org.newdawn.slick.state.*;
 
 public class Play extends BasicGameState {
@@ -25,9 +26,10 @@ public class Play extends BasicGameState {
         Image image;
         float speed;
         float timer;
-        float wait;
+        float wait; //temps de l'animation
         int row;
-        boolean animate;
+        boolean animate; 
+        boolean fury;
         public Player(Image image) {
             this.image = image;
             this.row = 1;
@@ -36,6 +38,7 @@ public class Play extends BasicGameState {
             this.timer = 0F;
             this.wait = 100F; 
             this.animate = false;
+            this.fury = false;
         }
     }
     
@@ -68,7 +71,7 @@ public class Play extends BasicGameState {
         float speed;
         public Wall(Image image) {
             this.image = image;
-            this.pos = new Vec2D(600,0);
+            this.pos = new Vec2D(640,0);
             this.speed = 0.5F;
         }
     }
@@ -85,6 +88,37 @@ public class Play extends BasicGameState {
         
     }
     
+    public void destroyWall() {
+        
+        Polygon playerPoly = new Polygon(
+            new float[] {
+                player.pos.x, player.pos.y,
+                player.pos.x, player.pos.y + 100, // 100=taille perso
+                player.pos.x + 100, player.pos.y + 100,
+                player.pos.x + 100, player.pos.y 
+            }
+        );
+        Polygon wallPoly = new Polygon(
+            new float[] {
+                wall.pos.x, wall.pos.y, // =0
+                wall.pos.x, wall.pos.y + 480, // 480=longueur du mur
+                wall.pos.x + 64, wall.pos.y + 480,
+                wall.pos.x + 64, wall.pos.y 
+            }
+        );
+        
+        if(playerPoly.intersects(wallPoly)) {
+            if (player.fury==false) {
+            System.out.println("GAME OVER");
+            //score += 2000 * delta; // bonus score for destroyed bomb
+            }
+            else {
+                System.out.println("WALL DESTROYING");
+            } 
+        }
+    }
+            
+            
     public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
         winSize = new Vec2D(gc.getWidth(), gc.getHeight());
         wall = new Wall(new Image("res/wall.png"));
@@ -170,6 +204,10 @@ public class Play extends BasicGameState {
             player.pos.y = 160*player.row+30;
         }
         
+        if (wall.pos.x<640) {
+            destroyWall();
+        }
+    
     }
     
     public int getID() {
