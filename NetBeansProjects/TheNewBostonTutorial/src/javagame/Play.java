@@ -76,6 +76,17 @@ public class Play extends BasicGameState {
         }
     }
     
+    class Coin {
+        Vec2D pos;
+        Image image;
+        float speed;
+        public Coin(Image image) {
+            this.image = image;
+            this.pos = new Vec2D(640,120);
+            this.speed = 0.5F;
+        }
+    }
+    
     Vec2D winSize;
     
     Player player;
@@ -83,6 +94,9 @@ public class Play extends BasicGameState {
     Block block;
     
     Wall wall; // Make JAVA programming great again !
+    
+    Coin coin;
+    List<Coin> activeCoins;
     
     public Play(int state) {
         
@@ -117,12 +131,44 @@ public class Play extends BasicGameState {
             } 
         }
     }
+    
+    public void destroyCoin() {
+        List<Coin> inactiveCoins = new ArrayList<>();
+        
+        Polygon playerPoly = new Polygon(
+            new float[] {
+                player.pos.x, player.pos.y,
+                player.pos.x, player.pos.y + 100, // 100=taille perso
+                player.pos.x + 100, player.pos.y + 100,
+                player.pos.x + 100, player.pos.y 
+            }
+        );
+        for(Coin coin: activeCoins) {
             
+            Polygon coinPoly = new Polygon(
+                new float[] {
+                    coin.pos.x, coin.pos.y, // =0
+                    coin.pos.x, coin.pos.y + 50, // taille coin
+                    coin.pos.x + 50, coin.pos.y + 50,
+                    coin.pos.x + 50, coin.pos.y 
+                }
+            );
+
+            if(playerPoly.intersects(coinPoly)) {
+                System.out.println("Grab coin");
+                inactiveCoins.add(coin);
+                //score += 2000 ; // bonus score for destroyed bomb
+            }
+        activeCoins.removeAll(inactiveCoins);
+        }
+    }
             
     public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
         winSize = new Vec2D(gc.getWidth(), gc.getHeight());
         wall = new Wall(new Image("res/wall.png"));
         block = new Block();
+        coin = new Coin(new Image("res/coin.png"));
+        activeCoins= new ArrayList<>();
         
         String[] letters = "EJQYEBBXBQYEJYQEXJYJJXBYXQBQXE".split("");
         
