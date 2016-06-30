@@ -28,6 +28,7 @@ public class Play extends BasicGameState {
         int row;
         boolean animate; 
         boolean fury;
+        int score;
         public Player(Image image) {
             this.image = image;
             this.row = 1;
@@ -37,6 +38,7 @@ public class Play extends BasicGameState {
             this.wait = 100F; 
             this.animate = false;
             this.fury = false;
+            this.score = 0;
         }
     }
     
@@ -156,6 +158,7 @@ public class Play extends BasicGameState {
                 player.pos.x + 100, player.pos.y 
             }
         );
+        
         for(Coin coin: activeCoins) {
             
             if (coin.pos.x < -50) {
@@ -173,13 +176,11 @@ public class Play extends BasicGameState {
 
                 if(playerPoly.intersects(coinPoly)) {
                     System.out.println("Grab coin");
+                    player.score +=1;
                     inactiveCoins.add(coin);
                     //score += 2000 ; // bonus score for destroyed bomb
                 }
             }
-        
-        
-        
         }
         activeCoins.removeAll(inactiveCoins);
     }
@@ -225,6 +226,8 @@ public class Play extends BasicGameState {
         for (Coin coin:activeCoins) {
             coin.image.draw(coin.pos.x, coin.pos.y);
         }
+        
+        g.drawString("Score : "+Integer.toString(player.score),500,30);
         
         //g.drawString(Float.toString(coinTime), 100, 100);
     }
