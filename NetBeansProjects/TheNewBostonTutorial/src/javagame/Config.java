@@ -43,17 +43,17 @@ public class Config extends BasicGameState {
         }
     }
     
-    Image bgInstr;
+    Image bgConfig;
     Button buttonBack;
     
     public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
-        bgInstr = new Image("res/instr.png");
+        bgConfig = new Image("res/config.png");
         
         buttonBack = new Config.Button(new Image("res/Back.png"), new Image("res/BackActive.png"),128,256,512,320);
     }
     
     public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
-        g.drawImage(bgInstr, 0, 0);
+        g.drawImage(bgConfig, 0, 0);
         
         if (buttonBack.active) {
             g.drawImage(buttonBack.imageActive, buttonBack.x1, buttonBack.y1);
