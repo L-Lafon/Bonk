@@ -71,7 +71,7 @@ public class Play extends BasicGameState {
         float speed;
         public Wall(Image image) {
             this.image = image;
-            this.pos = new Vec2D(640,0);
+            this.pos = new Vec2D(640,120);
             this.speed = 0.5F;
         }
     }
