@@ -1,10 +1,8 @@
 package javagame;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import java.io.*;
 
 import org.newdawn.slick.*;
 import org.newdawn.slick.geom.Polygon;
@@ -99,7 +97,7 @@ public class Play extends BasicGameState {
     float coinStage = 0;
     float coinCount = 0;
     float coinTime = 0;
-    float coinWait = 200;
+    float coinWait = 256;
     
     public Play(int state) {
         
@@ -136,6 +134,7 @@ public class Play extends BasicGameState {
     }
     
     public void createCoin() throws SlickException {
+        System.out.println("creating coin");
         Coin coin = new Coin();
         coin.pos.x = 640;
         coin.pos.y = 120*(coinStage+1)+35;
@@ -178,9 +177,11 @@ public class Play extends BasicGameState {
                     //score += 2000 ; // bonus score for destroyed bomb
                 }
             }
-            
-        activeCoins.removeAll(inactiveCoins);
+        
+        
+        
         }
+        activeCoins.removeAll(inactiveCoins);
     }
             
     public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
@@ -225,7 +226,7 @@ public class Play extends BasicGameState {
             coin.image.draw(coin.pos.x, coin.pos.y);
         }
         
-        g.drawString(Float.toString(activeCoins.size()), 100, 100);
+        //g.drawString(Float.toString(coinTime), 100, 100);
     }
     
     public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
@@ -288,7 +289,6 @@ public class Play extends BasicGameState {
         }
         
         destroyCoin();
-    
     }
     
     public int getID() {
