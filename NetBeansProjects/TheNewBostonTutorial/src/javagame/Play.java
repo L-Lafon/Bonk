@@ -28,6 +28,8 @@ public class Play extends BasicGameState {
         int row;
         boolean animate; 
         boolean fury;
+        float furyWait;
+        float furyTime;
         int score;
         public Player(Image image) {
             this.image = image;
@@ -38,6 +40,8 @@ public class Play extends BasicGameState {
             this.wait = 100F; 
             this.animate = false;
             this.fury = false;
+            this.furyWait = 900F;
+            this.furyTime = 0F;
             this.score = 0;
         }
     }
@@ -60,7 +64,7 @@ public class Play extends BasicGameState {
         public Block() {
             this.count = 0;
             this.pos = new Vec2D(0,120);
-            this.block = new ArrayList<Bg>();
+            this.block = new ArrayList<>();
             this.speed = 0.5F;
         }
     }
@@ -229,6 +233,9 @@ public class Play extends BasicGameState {
         
         g.drawString("Score : "+Integer.toString(player.score),500,30);
         
+        if (player.fury) {
+            g.drawString("Fury activated", 30,30);
+        } 
         //g.drawString(Float.toString(coinTime), 100, 100);
     }
     
@@ -292,6 +299,19 @@ public class Play extends BasicGameState {
         }
         
         destroyCoin();
+        
+        if (input.isKeyPressed(Input.KEY_SPACE)) {
+            player.fury = true;
+        }
+        
+        if (player.fury) {
+            player.furyTime += delta;
+        }
+        
+        if (player.furyTime>player.furyWait ) {
+            player.fury = false;
+            player.furyTime = 0;
+        }
     }
     
     public int getID() {
