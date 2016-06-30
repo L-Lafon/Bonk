@@ -80,8 +80,8 @@ public class Play extends BasicGameState {
         Vec2D pos;
         Image image;
         float speed;
-        public Coin(Image image) {
-            this.image = image;
+        public Coin() throws SlickException {
+            this.image = new Image ("res/coin.png");
             this.pos = new Vec2D(640,120);
             this.speed = 0.5F;
         }
@@ -95,8 +95,11 @@ public class Play extends BasicGameState {
     
     Wall wall; // Make JAVA programming great again !
     
-    Coin coin;
     List<Coin> activeCoins;
+    float coinStage = 0;
+    float coinCount = 0;
+    float coinTime = 0;
+    float coinWait = 900;
     
     public Play(int state) {
         
@@ -132,6 +135,17 @@ public class Play extends BasicGameState {
         }
     }
     
+    public void createCoin() throws SlickException {
+        Coin coin = new Coin();
+        coin.pos.x = 640;
+        coin.pos.y = 120*(coinStage+1)+35;
+        coinCount = (coinCount+1) % 5;
+        if (coinCount == 0) {
+            coinStage = (coinStage+1) % 3;
+        }
+        activeCoins.add(coin);
+    }
+    
     public void destroyCoin() {
         List<Coin> inactiveCoins = new ArrayList<>();
         
@@ -145,20 +159,26 @@ public class Play extends BasicGameState {
         );
         for(Coin coin: activeCoins) {
             
-            Polygon coinPoly = new Polygon(
-                new float[] {
-                    coin.pos.x, coin.pos.y, // =0
-                    coin.pos.x, coin.pos.y + 50, // taille coin
-                    coin.pos.x + 50, coin.pos.y + 50,
-                    coin.pos.x + 50, coin.pos.y 
-                }
-            );
-
-            if(playerPoly.intersects(coinPoly)) {
-                System.out.println("Grab coin");
+            if (coin.pos.x < -50) {
                 inactiveCoins.add(coin);
-                //score += 2000 ; // bonus score for destroyed bomb
             }
+            else {
+                Polygon coinPoly = new Polygon(
+                    new float[] {
+                        coin.pos.x, coin.pos.y, // =0
+                        coin.pos.x, coin.pos.y + 50, // taille coin
+                        coin.pos.x + 50, coin.pos.y + 50,
+                        coin.pos.x + 50, coin.pos.y 
+                    }
+                );
+
+                if(playerPoly.intersects(coinPoly)) {
+                    System.out.println("Grab coin");
+                    inactiveCoins.add(coin);
+                    //score += 2000 ; // bonus score for destroyed bomb
+                }
+            }
+            
         activeCoins.removeAll(inactiveCoins);
         }
     }
@@ -167,7 +187,6 @@ public class Play extends BasicGameState {
         winSize = new Vec2D(gc.getWidth(), gc.getHeight());
         wall = new Wall(new Image("res/wall.png"));
         block = new Block();
-        coin = new Coin(new Image("res/coin.png"));
         activeCoins= new ArrayList<>();
         
         String[] letters = "EJQYEBBXBQYEJYQEXJYJJXBYXQBQXE".split("");
@@ -202,7 +221,11 @@ public class Play extends BasicGameState {
         
         wall.image.draw(wall.pos.x, wall.pos.y);
         
-        g.drawString(Float.toString(block.count), 100, 100);
+        for (Coin coin:activeCoins) {
+            coin.image.draw(coin.pos.x, coin.pos.y);
+        }
+        
+        g.drawString(Float.toString(activeCoins.size()), 100, 100);
     }
     
     public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
@@ -253,6 +276,18 @@ public class Play extends BasicGameState {
         if (wall.pos.x<640) {
             destroyWall();
         }
+        
+        coinTime += delta;
+        if (coinTime > coinWait) {
+            createCoin();
+            coinTime = 0;
+        }
+        
+        for (Coin coin : activeCoins) {
+            coin.pos.y -= delta*coin.speed;
+        }
+        
+        destroyCoin();
     
     }
     
