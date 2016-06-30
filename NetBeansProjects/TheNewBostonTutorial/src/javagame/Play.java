@@ -99,7 +99,7 @@ public class Play extends BasicGameState {
     float coinStage = 0;
     float coinCount = 0;
     float coinTime = 0;
-    float coinWait = 900;
+    float coinWait = 200;
     
     public Play(int state) {
         
@@ -284,7 +284,7 @@ public class Play extends BasicGameState {
         }
         
         for (Coin coin : activeCoins) {
-            coin.pos.y -= delta*coin.speed;
+            coin.pos.x -= delta*coin.speed;
         }
         
         destroyCoin();
