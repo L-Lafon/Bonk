@@ -10,6 +10,8 @@ import org.newdawn.slick.state.*;
 
 public class Play extends BasicGameState {
     
+    public static final float SPEED = 0.5F;
+    
     class Vec2D {
         float x;
         float y;
@@ -82,7 +84,7 @@ public class Play extends BasicGameState {
             this.count = 0;
             this.pos = new Vec2D(0,120);
             this.block = new ArrayList<>();
-            this.speed = 0.5F;
+            this.speed = SPEED;
         }
     }
     
@@ -93,7 +95,7 @@ public class Play extends BasicGameState {
         public Wall(Image image) {
             this.image = image;
             this.pos = new Vec2D(640,120);
-            this.speed = 0.5F;
+            this.speed = SPEED;
         }
     }
     
@@ -104,7 +106,7 @@ public class Play extends BasicGameState {
         public Coin() throws SlickException {
             this.image = new Image ("res/coin.png");
             this.pos = new Vec2D(640,120);
-            this.speed = 0.5F;
+            this.speed = SPEED;
         }
     }
     
@@ -128,7 +130,7 @@ public class Play extends BasicGameState {
     List<Coin> activeCoins;
     float coinStage = 0;
     float coinTime = 0;
-    float coinWait = 256;
+    float coinWait = 300;
     
     float random = 0;
     
