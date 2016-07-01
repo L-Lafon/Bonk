@@ -102,9 +102,17 @@ public class Play extends BasicGameState {
     class Coin {
         Vec2D pos;
         Image image;
+        Image[] images;
         float speed;
         public Coin() throws SlickException {
-            this.image = new Image ("res/coin.png");
+            this.image = new Image ("res/coin1.png");
+            this.images = new Image[] {
+                new Image("res/coin1.png"),
+                new Image("res/coin2.png"),
+                new Image("res/coin3.png"),
+                new Image("res/coin4.png"),
+                
+            };
             this.pos = new Vec2D(640,120);
             this.speed = SPEED;
         }
@@ -131,6 +139,8 @@ public class Play extends BasicGameState {
     float coinStage = 0;
     float coinTime = 0;
     float coinWait = 300;
+    float coinAnim = 0;
+    int coinFrame = 0;
     
     float random = 0;
     
@@ -284,7 +294,7 @@ public class Play extends BasicGameState {
         wall.image.draw(wall.pos.x, wall.pos.y);
         
         for (Coin coin:activeCoins) {
-            coin.image.draw(coin.pos.x, coin.pos.y);
+            coin.images[coinFrame].draw(coin.pos.x, coin.pos.y);
         }
         
         g.drawString("Score : "+Integer.toString(player.score),500,30);
@@ -373,6 +383,14 @@ public class Play extends BasicGameState {
         if (player.furyTime > player.furyWait ) {
             player.fury = false;
             player.furyTime = 0;
+        }
+        
+        
+        coinAnim += delta;
+        
+        if (coinAnim > 100) {
+            coinFrame = (coinFrame+1) % 4;
+            coinAnim = 0;
         }
     }
     
