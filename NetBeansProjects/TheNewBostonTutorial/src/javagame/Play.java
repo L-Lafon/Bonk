@@ -37,8 +37,11 @@ public class Play extends BasicGameState {
         float furyLoadWait;
         Image furyImage;
         Image[] furyAnimation;
-        int furyStep;
+        Image[] furySprites;
+        int furyStep; // étape d'animation chargement
         int score;
+        int furySpr; // étape d'animation fury
+        float furyAnimTime;
         public Player() throws SlickException {
             this.image = new Image("res/char.png");
             this.row = 1;
@@ -54,14 +57,22 @@ public class Play extends BasicGameState {
             this.furyLoadTime = 0; // timer de chargement de la furie
             this.furyLoadWait = 1000; // tps de chargement de la furie
             this.furyStep = 0;
-            this.furyImage = new Image("res/charFury.png");
+            this.furyImage = new Image("res/flame.png");
             this.furyAnimation = new Image[] {
                 new Image("res/charFury1.png"),
                 new Image("res/charFury2.png"),
                 new Image("res/charFury3.png"),
                 new Image("res/charFury4.png"),
             };
+            this.furySprites = new Image[] {
+                new Image("res/flame1.png"),
+                new Image("res/flame2.png"),
+                new Image("res/flame3.png"),
+                new Image("res/flame4.png"),
+            };
+            this.furySpr = 0;
             this.score = 0;
+            this.furyAnimTime = 0F;
         }
     }
     
@@ -281,13 +292,9 @@ public class Play extends BasicGameState {
                 player.image.draw(player.pos.x, player.pos.y);
             }
             
-            
-            
-            
-            
         } else {
             g.drawString("Fury activated", 30,30);
-            player.furyImage.draw(player.pos.x, player.pos.y);
+            player.furySprites[player.furySpr].draw(player.pos.x - 85, player.pos.y - 50);
         } 
         
         
@@ -378,6 +385,12 @@ public class Play extends BasicGameState {
         
         if (player.fury) {
             player.furyTime += delta;
+            player.furyAnimTime += delta;
+        }
+        
+        if (player.furyAnimTime > 100) {
+            player.furySpr = (player.furySpr + 1) % 4;
+            player.furyAnimTime = 0;
         }
         
         if (player.furyTime > player.furyWait ) {
