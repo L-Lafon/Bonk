@@ -137,6 +137,7 @@ public class Play extends BasicGameState {
             }
             else {
                 System.out.println("WALL DESTROYING");
+                wall.pos.x = -100;
             } 
         }
     }
@@ -197,7 +198,8 @@ public class Play extends BasicGameState {
         block = new Block();
         activeCoins= new ArrayList<>();
         
-        String[] letters = "EJQYEBBXBQYEJYQEXJYJJXBYXQBQXE".split("");
+        //String[] letters = "EJQYEBBXBQYEJYQEXJYJJXBYXQBQXE".split("");
+        String[] letters = "YGXJYJYYQQEGXJGXEEGXQEGXBJQBBB".split("");
         
         boolean nextwall = false;
         
