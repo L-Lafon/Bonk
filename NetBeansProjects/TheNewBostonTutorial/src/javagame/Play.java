@@ -103,9 +103,10 @@ public class Play extends BasicGameState {
     
     List<Coin> activeCoins;
     float coinStage = 0;
-    float coinCount = 0;
     float coinTime = 0;
     float coinWait = 256;
+    
+    float random = 0;
     
     public Play(int state) {
         
@@ -143,14 +144,11 @@ public class Play extends BasicGameState {
     }
     
     public void createCoin() throws SlickException {
+        coinStage = (int)(Math.random() * 3);
         System.out.println("creating coin");
         Coin coin = new Coin();
         coin.pos.x = 640;
         coin.pos.y = 120*(coinStage+1)+35;
-        coinCount = (coinCount+1) % 5;
-        if (coinCount == 0) {
-            coinStage = (coinStage+1) % 3;
-        }
         activeCoins.add(coin);
     }
     
