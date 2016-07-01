@@ -350,7 +350,7 @@ public class Play extends BasicGameState {
         
         destroyCoin();
         
-        if (input.isKeyPressed(Input.KEY_SPACE)) {
+        if (input.isKeyPressed(Input.KEY_SPACE) && player.fury == false) {
             player.furyLoad = true;
         }
         
