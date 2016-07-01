@@ -93,6 +93,15 @@ public class Play extends BasicGameState {
         }
     }
     
+    class Stats {
+        int nbWallDestr;
+        int score;
+        public Stats() throws SlickException {
+            this.nbWallDestr = 0;
+            this.score = 0;
+        }
+    }
+    
     Vec2D winSize;
     
     Player player;
@@ -145,7 +154,7 @@ public class Play extends BasicGameState {
     
     public void createCoin() throws SlickException {
         coinStage = (int)(Math.random() * 3);
-        System.out.println("creating coin");
+        //System.out.println("creating coin");
         Coin coin = new Coin();
         coin.pos.x = 640;
         coin.pos.y = 120*(coinStage+1)+35;
@@ -180,10 +189,9 @@ public class Play extends BasicGameState {
                 );
 
                 if(playerPoly.intersects(coinPoly)) {
-                    System.out.println("Grab coin");
+                    //System.out.println("Grab coin");
                     player.score +=1;
                     inactiveCoins.add(coin);
-                    //score += 2000 ; // bonus score for destroyed bomb
                 }
             }
         }
