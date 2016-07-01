@@ -30,8 +30,9 @@ public class Play extends BasicGameState {
         boolean fury;
         float furyWait;
         float furyTime;
+        Image furyImage;
         int score;
-        public Player(Image image) {
+        public Player(Image image, Image furyImage) {
             this.image = image;
             this.row = 1;
             this.pos = new Vec2D(30,120*(this.row+1)+10);
@@ -42,6 +43,7 @@ public class Play extends BasicGameState {
             this.fury = false;
             this.furyWait = 900F;
             this.furyTime = 0F;
+            this.furyImage = furyImage;
             this.score = 0;
         }
     }
@@ -210,7 +212,7 @@ public class Play extends BasicGameState {
             
         }
         
-        player = new Player(new Image("res/char.png"));
+        player = new Player(new Image("res/char.png"),new Image("res/charFury.png"));
         
     }
     
@@ -223,7 +225,13 @@ public class Play extends BasicGameState {
         else {
             block.block.get(0).image.draw(winSize.x + block.pos.x,block.pos.y);
         }
-        player.image.draw(player.pos.x, player.pos.y);
+        if (player.fury==false) {
+            player.image.draw(player.pos.x, player.pos.y);
+        } else {
+            g.drawString("Fury activated", 30,30);
+            player.furyImage.draw(player.pos.x, player.pos.y);
+        } 
+        
         
         wall.image.draw(wall.pos.x, wall.pos.y);
         
@@ -233,10 +241,6 @@ public class Play extends BasicGameState {
         
         g.drawString("Score : "+Integer.toString(player.score),500,30);
         
-        if (player.fury) {
-            g.drawString("Fury activated", 30,30);
-        } 
-        //g.drawString(Float.toString(coinTime), 100, 100);
     }
     
     public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
