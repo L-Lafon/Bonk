@@ -28,12 +28,17 @@ public class Play extends BasicGameState {
         int row;
         boolean animate; 
         boolean fury;
+        boolean furyLoad;
         float furyWait;
         float furyTime;
+        float furyLoadTime;
+        float furyLoadWait;
         Image furyImage;
+        Image[] furyAnimation;
+        int furyStep;
         int score;
-        public Player(Image image, Image furyImage) {
-            this.image = image;
+        public Player() throws SlickException {
+            this.image = new Image("res/char.png");
             this.row = 1;
             this.pos = new Vec2D(30,120*(this.row+1)+10);
             this.speed = 0F;
@@ -41,9 +46,19 @@ public class Play extends BasicGameState {
             this.wait = 100F; 
             this.animate = false;
             this.fury = false;
-            this.furyWait = 900F;
-            this.furyTime = 0F;
-            this.furyImage = furyImage;
+            this.furyWait = 900F; // tps de la furie
+            this.furyTime = 0F; // timer de la furie
+            this.furyLoad = false;
+            this.furyLoadTime = 0; // timer de chargement de la furie
+            this.furyLoadWait = 1000; // tps de chargement de la furie
+            this.furyStep = 0;
+            this.furyImage = new Image("res/charFury.png");
+            this.furyAnimation = new Image[] {
+                new Image("res/charFury1.png"),
+                new Image("res/charFury2.png"),
+                new Image("res/charFury3.png"),
+                new Image("res/charFury4.png"),
+            };
             this.score = 0;
         }
     }
@@ -220,7 +235,7 @@ public class Play extends BasicGameState {
             
         }
         
-        player = new Player(new Image("res/char.png"),new Image("res/charFury.png"));
+        player = new Player();
         
     }
     
@@ -233,8 +248,31 @@ public class Play extends BasicGameState {
         else {
             block.block.get(0).image.draw(winSize.x + block.pos.x,block.pos.y);
         }
+        
+        
         if (player.fury==false) {
-            player.image.draw(player.pos.x, player.pos.y);
+            if (player.furyLoad) {
+                if (player.furyLoadTime < 250) {
+                    player.furyAnimation[0].draw(player.pos.x, player.pos.y);
+                }
+                else if (player.furyLoadTime < 500) {
+                    player.furyAnimation[1].draw(player.pos.x, player.pos.y);
+                }
+                else if (player.furyLoadTime < 750) {
+                    player.furyAnimation[2].draw(player.pos.x, player.pos.y);
+                }
+                else {
+                    player.furyAnimation[3].draw(player.pos.x, player.pos.y);
+                }
+            }
+            else {
+                player.image.draw(player.pos.x, player.pos.y);
+            }
+            
+            
+            
+            
+            
         } else {
             g.drawString("Fury activated", 30,30);
             player.furyImage.draw(player.pos.x, player.pos.y);
@@ -313,14 +351,24 @@ public class Play extends BasicGameState {
         destroyCoin();
         
         if (input.isKeyPressed(Input.KEY_SPACE)) {
+            player.furyLoad = true;
+        }
+        
+        if (player.furyLoad) {
+            player.furyLoadTime += delta;
+        }
+        
+        if (player.furyLoadTime > player.furyLoadWait) {
+            player.furyLoad = false;
             player.fury = true;
+            player.furyLoadTime = 0;
         }
         
         if (player.fury) {
             player.furyTime += delta;
         }
         
-        if (player.furyTime>player.furyWait ) {
+        if (player.furyTime > player.furyWait ) {
             player.fury = false;
             player.furyTime = 0;
         }
