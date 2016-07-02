@@ -294,8 +294,9 @@ public class Play extends BasicGameState {
             
         } else {
             g.drawString("Fury activated", 30,30);
-            player.furyImage.draw(player.pos.x, player.pos.y);
+            
             player.flames[player.furySpr].draw(player.pos.x - 85, player.pos.y - 50);
+            player.furyImage.draw(player.pos.x, player.pos.y);
         } 
         
         
