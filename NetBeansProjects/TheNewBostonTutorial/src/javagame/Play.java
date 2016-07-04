@@ -314,6 +314,8 @@ public class Play extends BasicGameState {
             coin.images[coinFrame].draw(coin.pos.x, coin.pos.y);
         }
         
+        new Image("res/test_hud.png").draw();
+        
         g.setFont(font);
         g.drawString("Score : "+Integer.toString(player.score),500,30);
         
