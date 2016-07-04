@@ -3,6 +3,7 @@ package javagame;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.awt.Font;
 
 import org.newdawn.slick.*;
 import org.newdawn.slick.geom.Polygon;
@@ -122,7 +123,6 @@ public class Play extends BasicGameState {
                 new Image("res/coin2.png"),
                 new Image("res/coin3.png"),
                 new Image("res/coin4.png"),
-                
             };
             this.pos = new Vec2D(640,120);
             this.speed = SPEED;
@@ -132,9 +132,11 @@ public class Play extends BasicGameState {
     class Stats {
         int nbWallDestr;
         int score;
+        float tpsReac;
         public Stats() throws SlickException {
             this.nbWallDestr = 0;
             this.score = 0;
+            this.tpsReac = 0;
         }
     }
     
@@ -154,6 +156,8 @@ public class Play extends BasicGameState {
     int coinFrame = 0;
     
     float random = 0;
+    
+    TrueTypeFont font;
     
     public Play(int state) {
         
@@ -242,6 +246,10 @@ public class Play extends BasicGameState {
         block = new Block();
         activeCoins= new ArrayList<>();
         
+        // initialisation police de caractère
+        Font awtFont = new Font("Lucida Sans", Font.BOLD, 24) {};
+        font = new TrueTypeFont(awtFont, false);
+        
         //String[] letters = "EJQYEBBXBQYEJYQEXJYJJXBYXQBQXE".split("");
         String[] letters = "YGXJYJYYQQEGXJGXEEGXQEGXBJQBBB".split("");
         
@@ -306,6 +314,7 @@ public class Play extends BasicGameState {
             coin.images[coinFrame].draw(coin.pos.x, coin.pos.y);
         }
         
+        g.setFont(font);
         g.drawString("Score : "+Integer.toString(player.score),500,30);
         
     }
