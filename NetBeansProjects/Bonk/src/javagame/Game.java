@@ -13,10 +13,10 @@ public class Game extends StateBasedGame {
 
     public Game(String gamename) {
         super(gamename);
-        this.addState(new Menu(MENU));
+        this.addState(new Interface(MENU));
         this.addState(new Play(PLAY));
-        this.addState(new Instr(INSTR));
-        this.addState(new Config(CONFIG));
+        this.addState(new Interface(INSTR));
+        this.addState(new Interface(CONFIG));
     }
     
     public void initStatesList(GameContainer gc) throws SlickException {
@@ -31,7 +31,7 @@ public class Game extends StateBasedGame {
         AppGameContainer appgc;
         try {
             appgc = new AppGameContainer(new Game(GAMENAME));
-            appgc.setShowFPS(true);
+            appgc.setShowFPS(false);
             appgc.setDisplayMode(640, 480, false);
             appgc.start();
         }
