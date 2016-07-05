@@ -185,7 +185,7 @@ public class Play extends BasicGameState {
         if(playerPoly.intersects(wallPoly)) {
             if (player.fury==false) {
             System.out.println("GAME OVER");
-            //score += 2000 * delta; // bonus score for destroyed bomb
+            //sbg.enterState(0);
             }
             else {
                 System.out.println("WALL DESTROYING");
