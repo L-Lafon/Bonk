@@ -13,10 +13,10 @@ public class Game extends StateBasedGame {
 
     public Game(String gamename) {
         super(gamename);
-        this.addState(new Interface(MENU));
+        this.addState(new Menu(MENU));
         this.addState(new Play(PLAY));
-        this.addState(new Interface(INSTR));
-        this.addState(new Interface(CONFIG));
+        this.addState(new Instr(INSTR));
+        this.addState(new Config(CONFIG));
     }
     
     public void initStatesList(GameContainer gc) throws SlickException {

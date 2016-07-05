@@ -31,7 +31,7 @@ public class Menu extends BasicGameState {
     }
     
     Image bgMenu;
-    Button buttonPlay, buttonInstr, buttonSettings;
+    Button buttonPlay, buttonInstr, buttonSettings, buttonSound;
     
     public Menu(int state) {
         
@@ -43,6 +43,7 @@ public class Menu extends BasicGameState {
         buttonPlay = new Button(new Image("res/Play.png"), new Image("res/PlayActive.png"),128,256,512,320);
         buttonInstr = new Button(new Image("res/Instructions.png"), new Image("res/InstructionsActive.png"),128,320,512,384);
         buttonSettings = new Button(new Image("res/Settings.png"), new Image("res/SettingsActive.png"),128,384,512,448);
+        buttonSound = new Button(new Image("res/SoundOff.png"), new Image("res/SoundOn.png"), 500, 30, 550, 40);
     }
     
     public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
@@ -68,6 +69,12 @@ public class Menu extends BasicGameState {
         }
         else {
             g.drawImage(buttonSettings.image, buttonSettings.x1, buttonSettings.y1);
+        }
+        
+        if (buttonSound.active) {
+            g.drawImage(buttonSound.imageActive, buttonSound.x1, buttonSound.y1);
+        } else {
+            g.drawImage(buttonSound.image, buttonSound.x1, buttonSound.y1);
         }
         
     }
@@ -106,6 +113,14 @@ public class Menu extends BasicGameState {
         }
         else {
             buttonSettings.active = false;
+        }
+        
+        if (buttonSound.hover(xpos, ypos) & input.isMousePressed(0)) {
+            if (buttonSound.active) {
+                buttonSound.active = false;
+            } else {
+                buttonSound.active = true;
+            }
         }
     }
     
