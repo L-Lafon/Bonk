@@ -317,7 +317,8 @@ public class Play extends BasicGameState {
         new Image("res/test_hud.png").draw();
         
         g.setFont(font);
-        g.drawString("Score : "+Integer.toString(player.score),500,30);
+        g.setColor(Color.yellow);
+        g.drawString(Integer.toString(player.score),515,56);
         
     }
     
