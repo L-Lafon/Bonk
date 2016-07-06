@@ -1,3 +1,9 @@
+/**
+ * @author Virumbrales-Lafon
+ * @version 1.0
+ * @see https://uf-mi.u-bordeaux.fr/ter-2016/virumbrales-lafon
+ */
+
 package javagame;
 
 import java.util.ArrayList;
@@ -238,7 +244,6 @@ public class Play extends BasicGameState {
     }
     
     
-    
     public void destroyWall() {
         
         Polygon playerPoly = new Polygon(
@@ -316,17 +321,17 @@ public class Play extends BasicGameState {
         }
         activeCoins.removeAll(inactiveCoins);
     }
-            
+    
+    
+    @Override
+    public void init(GameContainer gc, StateBasedGame sbg) throws SlickException{        
     /**
      *
-     * @param gc
-     * @param sbg
+     * @param gc the game container
+     * @param sbg state based game
      * @throws SlickException
      * @throws IOException
      */
-    
-    @Override
-    public void init(GameContainer gc, StateBasedGame sbg) throws SlickException{
         stats = new Stats();
         
         try {
@@ -523,6 +528,9 @@ public class Play extends BasicGameState {
     }
     
     public int getID() {
+        /**
+         * @return the id state of the class
+         */
         return 1;
     }
     
