@@ -172,6 +172,8 @@ public class Play extends BasicGameState {
         //int score;
         float tpsReac;
         int coins;
+        float timer;
+        boolean hasPressed;
         
         public Stats() throws SlickException {
             /*
@@ -187,12 +189,17 @@ public class Play extends BasicGameState {
             //this.score = 0;
             this.tpsReac = 0;
             this.coins = 0;
+            this.timer = 0;
+            this.hasPressed = false;
         }
         
-        public void write() {
+        public void write(int count) {
             try {
                     Writer file = new BufferedWriter(new FileWriter("data.csv", true));
-                    file.append(Float.toString(stats.tpsReac)+"\n");
+                    file.append(Integer.toString(count)+","
+                                +Boolean.toString(this.hasPressed)+","
+                                +Integer.toString(this.coins)+","
+                                +Float.toString(stats.tpsReac)+"\n");
                     file.close();
                 } catch (IOException iOException) {
                 }
@@ -302,6 +309,7 @@ public class Play extends BasicGameState {
                 if(playerPoly.intersects(coinPoly)) {
                     //System.out.println("Grab coin");
                     player.score +=1;
+                    stats.coins +=1 ;
                     inactiveCoins.add(coin);
                 }
             }
@@ -417,6 +425,8 @@ public class Play extends BasicGameState {
         if (block.pos.x < -winSize.x) { //passage au bg suivant
             block.pos.x = 0;
             block.count += 1;
+            stats.write(block.count);
+            stats.reset();
             if (block.count == block.block.size()) {
                 block.count = 0;
             }
@@ -424,7 +434,7 @@ public class Play extends BasicGameState {
         
         if (block.block.get((block.count + 1) % block.block.size()).wall) { // apparition du mur
             wall.pos.x = winSize.x + block.pos.x;
-            stats.tpsReac += delta;
+            stats.timer += delta;
         }
         else {
             wall.pos.x = 640;
@@ -474,8 +484,8 @@ public class Play extends BasicGameState {
         
         if (input.isKeyPressed(Input.KEY_SPACE) && player.fury == false) {
             player.furyLoad = true;
-            stats.write();
-            stats.reset();
+            stats.hasPressed = true;
+            stats.tpsReac = stats.timer;
         }
         
         if (player.furyLoad) {
