@@ -3,12 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/lea/JavaSlick2016/NetBeansProjects/Bonk/src/javagame/Menu.java</file>
-            <file>file:/home/lea/JavaSlick2016/NetBeansProjects/Bonk/src/javagame/Play.java</file>
-            <file>file:/home/lea/JavaSlick2016/NetBeansProjects/Bonk/src/javagame/Interface.java</file>
-            <file>file:/home/lea/JavaSlick2016/NetBeansProjects/Bonk/src/javagame/Instr.java</file>
-            <file>file:/home/lea/JavaSlick2016/NetBeansProjects/Bonk/src/javagame/Game.java</file>
-            <file>file:/home/lea/JavaSlick2016/NetBeansProjects/Bonk/src/javagame/Config.java</file>
+            <file>file:/home/corentin/JavaSlick2016/NetBeansProjects/Bonk/src/javagame/Game.java</file>
+            <file>file:/home/corentin/JavaSlick2016/NetBeansProjects/Bonk/src/javagame/Menu.java</file>
+            <file>file:/home/corentin/JavaSlick2016/NetBeansProjects/Bonk/src/javagame/Interface.java</file>
+            <file>file:/home/corentin/JavaSlick2016/NetBeansProjects/Bonk/src/javagame/Play.java</file>
         </group>
     </open-files>
 </project-private>

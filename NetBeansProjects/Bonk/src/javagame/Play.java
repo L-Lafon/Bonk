@@ -4,6 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import java.awt.Font;
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import org.lwjgl.input.Mouse;
 
 import org.newdawn.slick.*;
@@ -155,13 +162,40 @@ public class Play extends BasicGameState {
     }
     
     class Stats {
-        int nbWallDestr;
-        int score;
+        /*
+        tps de reaction
+        nb de pieces
+        nb appuis
+        
+        */
+        //int nbWallDestr;
+        //int score;
         float tpsReac;
+        int coins;
+        
         public Stats() throws SlickException {
+            /*
             this.nbWallDestr = 0;
             this.score = 0;
             this.tpsReac = 0;
+            */
+            this.reset();
+        }
+        
+        public void reset() {
+            //this.nbWallDestr = 0;
+            //this.score = 0;
+            this.tpsReac = 0;
+            this.coins = 0;
+        }
+        
+        public void write() {
+            try {
+                    Writer file = new BufferedWriter(new FileWriter("data.csv", true));
+                    file.append(Float.toString(stats.tpsReac)+"\n");
+                    file.close();
+                } catch (IOException iOException) {
+                }
         }
     }
     
@@ -186,9 +220,17 @@ public class Play extends BasicGameState {
     
     Button sound;
     
+    //kou rouloukoukou rouloukoukou
+    Stats stats; // #okjesors
+    
+    FileWriter statfile;
+    
+    
     public Play(int state) {
         
     }
+    
+    
     
     public void destroyWall() {
         
@@ -267,7 +309,26 @@ public class Play extends BasicGameState {
         activeCoins.removeAll(inactiveCoins);
     }
             
-    public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
+    /**
+     *
+     * @param gc
+     * @param sbg
+     * @throws SlickException
+     * @throws IOException
+     */
+    
+    @Override
+    public void init(GameContainer gc, StateBasedGame sbg) throws SlickException{
+        stats = new Stats();
+        
+        try {
+            Writer file = new FileWriter("data.csv");
+            file.write("background,pressed,coins,reaction-time\n");
+            file.close();
+        } catch (IOException iOException) {
+        }
+        
+        
         winSize = new Vec2D(gc.getWidth(), gc.getHeight());
         wall = new Wall(new Image("res/wall.png"));
         block = new Block();
@@ -353,7 +414,7 @@ public class Play extends BasicGameState {
         block.pos.x -= delta * block.speed;
         Input input = gc.getInput();
         
-        if (block.pos.x < -winSize.x) {
+        if (block.pos.x < -winSize.x) { //passage au bg suivant
             block.pos.x = 0;
             block.count += 1;
             if (block.count == block.block.size()) {
@@ -361,8 +422,9 @@ public class Play extends BasicGameState {
             }
         }
         
-        if (block.block.get((block.count + 1) % block.block.size()).wall) {
+        if (block.block.get((block.count + 1) % block.block.size()).wall) { // apparition du mur
             wall.pos.x = winSize.x + block.pos.x;
+            stats.tpsReac += delta;
         }
         else {
             wall.pos.x = 640;
@@ -412,6 +474,8 @@ public class Play extends BasicGameState {
         
         if (input.isKeyPressed(Input.KEY_SPACE) && player.fury == false) {
             player.furyLoad = true;
+            stats.write();
+            stats.reset();
         }
         
         if (player.furyLoad) {
