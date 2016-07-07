@@ -80,7 +80,7 @@ public class Play extends BasicGameState {
             this.furyTime = 0F; // timer de la furie
             this.furyLoad = false;
             this.furyLoadTime = 0; // timer de chargement de la furie
-            this.furyLoadWait = 1000; // tps de chargement de la furie
+            this.furyLoadWait = 500; // tps de chargement de la furie
             this.furyStep = 0;
             this.furyImage = new Image("res/idee_perso_fury.png");
             this.furyAnimation = new Image[] {
@@ -453,13 +453,13 @@ public class Play extends BasicGameState {
         
         if (player.fury==false) {
             if (player.furyLoad) {
-                if (player.furyLoadTime < 250) {
+                if (player.furyLoadTime < 125) {
                     player.furyAnimation[0].draw(player.pos.x, player.pos.y);
                 }
-                else if (player.furyLoadTime < 500) {
+                else if (player.furyLoadTime < 250) {
                     player.furyAnimation[1].draw(player.pos.x, player.pos.y);
                 }
-                else if (player.furyLoadTime < 750) {
+                else if (player.furyLoadTime < 375) {
                     player.furyAnimation[2].draw(player.pos.x, player.pos.y);
                 }
                 else {
@@ -503,7 +503,10 @@ public class Play extends BasicGameState {
         block.pos.x -= delta * block.speed;
         Input input = gc.getInput();
         
-        if (block.pos.x < -winSize.x) { //passage au bg suivant
+        /*
+        Display next Bg
+        */
+        if (block.pos.x < -winSize.x) {
             block.pos.x = 0;
             block.count += 1;
             stats.write(block.count);
@@ -513,24 +516,32 @@ public class Play extends BasicGameState {
             }
         }
         
+        /*
+        Display the wall
+        */
         if (block.block.get((block.count + 1) % block.block.size()).wall) { // apparition du mur
             wall.pos.x = winSize.x + block.pos.x;
             stats.timer += delta;
         }
         else {
             wall.pos.x = 640;
-        }
+        }        
         
+        /*
+        Input Up-Down
+        */
         if (input.isKeyPressed(Input.KEY_UP) && player.row > 0) {
             player.row -= 1;
             player.animate = true;
         }
-        
         if (input.isKeyPressed(Input.KEY_DOWN) && player.row < 2) {
             player.row += 1;
             player.animate=true;
         }
         
+        /*
+        Up-Down animation
+        */
         if (player.animate == true) {
             player.timer += delta;
             if (player.pos.y < 120*(player.row+1)+10) {
@@ -540,67 +551,76 @@ public class Play extends BasicGameState {
                 player.pos.y -= 120*delta/player.wait;
             }
         }
-        
         if (player.timer > player.wait) {
             player.timer=0;
             player.animate=false;
             player.pos.y = 120*(player.row+1)+10;
         }
         
+        /*
+        Destroy the wall if on-screen
+        */
         if (wall.pos.x<640) {
             destroyWall();
         }
         
+        /*
+        Create, move, animate and destroy coins
+        */
         coinTime += delta;
         if (coinTime > coinWait) {
             createCoin();
             coinTime = 0;
         }
-        
         for (Coin coin : activeCoins) {
             coin.pos.x -= delta*coin.speed;
         }
-        
+        coinAnim += delta;
+        if (coinAnim > 100) {
+            coinFrame = (coinFrame+1) % 4;
+            coinAnim = 0;
+        }
         destroyCoin();
         
+        /*
+        Load Fury
+        */
         if (input.isKeyPressed(Input.KEY_SPACE) && player.fury == false) {
             player.furyLoad = true;
             stats.hasPressed = true;
             stats.tpsReac = stats.timer;
         }
-        
         if (player.furyLoad) {
             player.furyLoadTime += delta;
         }
         
+        /*
+        Initiate Fury
+        */
         if (player.furyLoadTime > player.furyLoadWait) {
             player.furyLoad = false;
             player.fury = true;
             player.furyLoadTime = 0;
         }
-        
         if (player.fury) {
             player.furyTime += delta;
             player.furyAnimTime += delta;
         }
         
+        /*
+        Animate Fury
+        */
         if (player.furyAnimTime > 75) {
             player.furySpr = (player.furySpr + 1) % 4;
             player.furyAnimTime = 0;
         }
-        
         if (player.furyTime > player.furyWait ) {
             player.fury = false;
             player.furyTime = 0;
         }
         
         
-        coinAnim += delta;
         
-        if (coinAnim > 100) {
-            coinFrame = (coinFrame+1) % 4;
-            coinAnim = 0;
-        }
     }
     
     public int getID() {
