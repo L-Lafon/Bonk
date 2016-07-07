@@ -12,7 +12,7 @@ import org.newdawn.slick.state.*;
 
 /**
  * 
- * @author lea
+ * @author lea & corentin
  */
 public class Config extends BasicGameState {
     
@@ -66,6 +66,7 @@ public class Config extends BasicGameState {
      * @param sbg
      * @throws SlickException 
      */
+    @Override
     public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
         bgConfig = new Image("res/config.png");
         
@@ -79,6 +80,7 @@ public class Config extends BasicGameState {
      * @param g
      * @throws SlickException 
      */
+    @Override
     public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
         g.drawImage(bgConfig, 0, 0);
         
@@ -97,6 +99,7 @@ public class Config extends BasicGameState {
      * @param delta the time spent since the last call of the update method
      * @throws SlickException 
      */
+    @Override
     public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
         
         Input input = gc.getInput();
@@ -118,6 +121,7 @@ public class Config extends BasicGameState {
      * get the id state of the class
      * @return 3
      */
+    @Override
     public int getID() {
         return 3;
     }

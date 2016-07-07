@@ -61,6 +61,7 @@ public class Menu extends BasicGameState {
      * @param sbg
      * @throws SlickException 
      */
+    @Override
     public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
         bgMenu = new Image("res/title_new.png");
         
@@ -77,6 +78,7 @@ public class Menu extends BasicGameState {
      * @param g
      * @throws SlickException 
      */
+    @Override
     public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
         g.drawImage(bgMenu, 0, 0);
         
@@ -115,6 +117,7 @@ public class Menu extends BasicGameState {
      * @param delta the time spent since the last call of the update method
      * @throws SlickException 
      */
+    @Override
     public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
         Input input = gc.getInput();
         int xpos = Mouse.getX();
@@ -152,13 +155,8 @@ public class Menu extends BasicGameState {
         //System.out.println("Mouse : "+xpos+" , "+ypos);
         if (buttonSound.hover(xpos, ypos)) {
             if (input.isMousePressed(0)) {
-                if (buttonSound.active) {
-                    buttonSound.active = false;
-                } else {
-                    buttonSound.active = true;
-                } 
+                buttonSound.active = !buttonSound.active; // ! = not
             }
-            
         }
     }
     
@@ -166,6 +164,7 @@ public class Menu extends BasicGameState {
      * get the id state of the class
      * @return 0
      */
+    @Override
     public int getID() {
         return 0;
     }

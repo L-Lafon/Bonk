@@ -66,6 +66,7 @@ public class Instr extends BasicGameState {
      * @param sbg
      * @throws SlickException 
      */
+    @Override
     public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
         bgInstr = new Image("res/instr.png");
         
@@ -79,6 +80,7 @@ public class Instr extends BasicGameState {
      * @param g
      * @throws SlickException 
      */
+    @Override
     public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
         
         g.drawImage(bgInstr, 0, 0);
@@ -98,6 +100,7 @@ public class Instr extends BasicGameState {
      * @param delta the time spent since the last call of the update method
      * @throws SlickException 
      */
+    @Override
     public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
         
         Input input = gc.getInput();
@@ -119,6 +122,7 @@ public class Instr extends BasicGameState {
      * get the id state of the class
      * @return 2
      */
+    @Override
     public int getID() {
         return 2;
     }
