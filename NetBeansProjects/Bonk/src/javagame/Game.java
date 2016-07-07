@@ -3,6 +3,10 @@ package javagame;
 import org.newdawn.slick.*;
 import org.newdawn.slick.state.*;
 
+/**
+ * 
+ * @author lea & corentin
+ */
 public class Game extends StateBasedGame {
     
     public static final String GAMENAME = "BONK";
@@ -10,7 +14,11 @@ public class Game extends StateBasedGame {
     public static final int PLAY = 1;
     public static final int INSTR = 2;
     public static final int CONFIG = 3;
-
+    
+    /**
+     * 
+     * @param gamename 
+     */
     public Game(String gamename) {
         super(gamename);
         this.addState(new Menu(MENU));
@@ -19,6 +27,11 @@ public class Game extends StateBasedGame {
         this.addState(new Config(CONFIG));
     }
     
+    /**
+     * 
+     * @param gc the game container
+     * @throws SlickException 
+     */
     public void initStatesList(GameContainer gc) throws SlickException {
         this.getState(MENU).init(gc, this);
         this.getState(PLAY).init(gc, this);
@@ -27,6 +40,10 @@ public class Game extends StateBasedGame {
         this.enterState(MENU);
     }
     
+    /**
+     * 
+     * @param args 
+     */
     public static void main(String[] args) {
         AppGameContainer appgc;
         try {
