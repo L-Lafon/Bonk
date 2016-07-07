@@ -6,11 +6,12 @@ import org.newdawn.slick.state.*;
 
 /**
  * Menu Class for the beggining of the game : play, instructions, ...
+ * Menu class is extended to BasicGameState class into Slick
  * @author lea & corentin
  */
 public class Menu extends BasicGameState {
     /**
-     * Menu class is extended to BasicGameState class into Slick
+     * All you need to create a button
      */
     class Button {
         Image image, imageActive;
