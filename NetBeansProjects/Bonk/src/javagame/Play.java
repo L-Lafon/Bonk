@@ -28,6 +28,11 @@ public class Play extends BasicGameState {
     public static final float SPEED = 0.5F;
     
     class Vec2D {
+        /**
+         * A 2D vector containing x and y coordinates.
+         * @param x horizontal coordinate
+         * @param y vertical coordinate
+         */
         float x;
         float y;
         public Vec2D(float x, float y) {
@@ -57,6 +62,11 @@ public class Play extends BasicGameState {
         int score;
         int furySpr; // étape d'animation fury
         float furyAnimTime;
+        
+        /**
+         * Creates the main character
+         * @throws SlickException 
+         */
         public Player() throws SlickException {
             this.image = new Image("res/idee_perso.png");
             this.row = 1;
@@ -95,6 +105,11 @@ public class Play extends BasicGameState {
         Image image;
         boolean wall;
         
+        /**
+         * Creates a background with an image and a boolean
+         * @param image the image of the background
+         * @param wall  indicates if there is a wall on the background
+         */
         public Bg(Image image, boolean wall) {
             this.image = image;
             this.wall = wall;
@@ -106,6 +121,10 @@ public class Play extends BasicGameState {
         int count;
         float speed;
         List<Bg> block;
+        
+        /**
+         * Creates an empty list of backgrounds
+         */
         public Block() {
             this.count = 0;
             this.pos = new Vec2D(0,120);
@@ -118,8 +137,13 @@ public class Play extends BasicGameState {
         Vec2D pos;
         Image image;
         float speed;
-        public Wall(Image image) {
-            this.image = image;
+        
+        /**
+         * Creates a wall with an image, a Vec2D (position) and a speed
+         * @throws SlickException 
+         */
+        public Wall() throws SlickException {
+            this.image = new Image("res/wall.png");
             this.pos = new Vec2D(640,120);
             this.speed = SPEED;
         }
@@ -127,11 +151,14 @@ public class Play extends BasicGameState {
     
     class Coin {
         Vec2D pos;
-        Image image;
         Image[] images;
         float speed;
+        
+        /**
+         * Creates a coin with 4 images, a Vec2D (position) and a speed
+         * @throws SlickException 
+         */
         public Coin() throws SlickException {
-            this.image = new Image ("res/coin1.png");
             this.images = new Image[] {
                 new Image("res/coin1.png"),
                 new Image("res/coin2.png"),
@@ -148,13 +175,20 @@ public class Play extends BasicGameState {
         int x1, x2, y1, y2;
         boolean active = false;
         
-        public Button(Image image, Image imageActive, int x1, int y1, int x2, int y2) {
+        /**
+         * Constructs a button with two images and two coordinates
+         * @param image the default image of the button
+         * @param imageActive the image of the button when active
+         * @param x horizontal coordinate of the button (top-left corner)
+         * @param y vertical coordinate of the button (top left corner)
+         */
+        public Button(Image image, Image imageActive, int x, int y) {
             this.image = image;
             this.imageActive = imageActive;
-            this.x1 = x1;
-            this.y1 = y1;
-            this.x2 = x2;
-            this.y2 = y2;
+            this.x1 = x;
+            this.y1 = y;
+            this.x2 = x1 + this.image.getWidth();
+            this.y2 = y1 + this.image.getHeight();
         }
         
         public boolean hover(int xpos, int ypos) {
@@ -181,6 +215,10 @@ public class Play extends BasicGameState {
         float timer;
         boolean hasPressed;
         
+        /**
+         * Creates some stats about the player's performance
+         * @throws SlickException 
+         */
         public Stats() throws SlickException {
             /*
             this.nbWallDestr = 0;
@@ -190,6 +228,9 @@ public class Play extends BasicGameState {
             this.reset();
         }
         
+        /**
+         * Resets the stats
+         */
         public void reset() {
             //this.nbWallDestr = 0;
             //this.score = 0;
@@ -199,6 +240,10 @@ public class Play extends BasicGameState {
             this.hasPressed = false;
         }
         
+        /**
+         * Writes the stats to a .csv file
+         * @param count index of the background
+         */
         public void write(int count) {
             try {
                     Writer file = new BufferedWriter(new FileWriter("data.csv", true));
@@ -238,12 +283,17 @@ public class Play extends BasicGameState {
     
     FileWriter statfile;
     
-    
+    /**
+     * Creates the play screen
+     * @param state the index of the state in the state-based game
+     */
     public Play(int state) {
         
     }
     
-    
+    /**
+     * Destroys the wall when outside the game window or when the player breaks it
+     */
     public void destroyWall() {
         
         Polygon playerPoly = new Polygon(
@@ -275,6 +325,10 @@ public class Play extends BasicGameState {
         }
     }
     
+    /**
+     * Creates a coin in a random row and adds it to the list of active coins
+     * @throws SlickException 
+     */
     public void createCoin() throws SlickException {
         coinStage = (int)(Math.random() * 3);
         //System.out.println("creating coin");
@@ -284,6 +338,9 @@ public class Play extends BasicGameState {
         activeCoins.add(coin);
     }
     
+    /**
+     * Deletes the coins outside the game window or when the player collects them
+     */
     public void destroyCoin() {
         List<Coin> inactiveCoins = new ArrayList<>();
         
@@ -322,7 +379,12 @@ public class Play extends BasicGameState {
         activeCoins.removeAll(inactiveCoins);
     }
     
-    
+    /**
+     * Initialize the variables
+     * @param gc  the game container
+     * @param sbg the state based game
+     * @throws SlickException 
+     */
     @Override
     public void init(GameContainer gc, StateBasedGame sbg) throws SlickException{        
     /**
@@ -343,7 +405,7 @@ public class Play extends BasicGameState {
         
         
         winSize = new Vec2D(gc.getWidth(), gc.getHeight());
-        wall = new Wall(new Image("res/wall.png"));
+        wall = new Wall();
         block = new Block();
         activeCoins= new ArrayList<>();
         
@@ -371,6 +433,13 @@ public class Play extends BasicGameState {
         
     }
     
+    /**
+     * Draws everything on screen
+     * @param gc  the game container
+     * @param sbg the state based game
+     * @param g   the Graphics object
+     * @throws SlickException 
+     */
     public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
         
         block.block.get(block.count).image.draw(block.pos.x,block.pos.y);
@@ -423,6 +492,13 @@ public class Play extends BasicGameState {
         
     }
     
+    /**
+     * Updates all the variables
+     * @param gc    the game container
+     * @param sbg   the state based game
+     * @param delta the time spent since the last call of the update method
+     * @throws SlickException 
+     */
     public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
         block.pos.x -= delta * block.speed;
         Input input = gc.getInput();
