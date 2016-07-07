@@ -131,6 +131,28 @@ public class Play extends BasicGameState {
             this.block = new ArrayList<>();
             this.speed = SPEED;
         }
+        
+        /**
+         * Get a background at a given index
+         * @param index index of the background
+         * @return a background
+         */
+        public Bg get(int index) {
+            return this.block.get(index);
+        }
+        
+        /**
+         * Add a background to the block
+         * @param bg the background to add
+         * @return true
+         */
+        public boolean add(Bg bg) {
+            return this.block.add(bg);
+        }
+        
+        public int size() {
+            return this.block.size();
+        }
     }
     
     class Wall {
@@ -167,37 +189,6 @@ public class Play extends BasicGameState {
             };
             this.pos = new Vec2D(640,120);
             this.speed = SPEED;
-        }
-    }
-    
-    class Button {
-        Image image, imageActive;
-        int x1, x2, y1, y2;
-        boolean active = false;
-        
-        /**
-         * Constructs a button with two images and two coordinates
-         * @param image the default image of the button
-         * @param imageActive the image of the button when active
-         * @param x horizontal coordinate of the button (top-left corner)
-         * @param y vertical coordinate of the button (top left corner)
-         */
-        public Button(Image image, Image imageActive, int x, int y) {
-            this.image = image;
-            this.imageActive = imageActive;
-            this.x1 = x;
-            this.y1 = y;
-            this.x2 = x1 + this.image.getWidth();
-            this.y2 = y1 + this.image.getHeight();
-        }
-        
-        public boolean hover(int xpos, int ypos) {
-            if (xpos > this.x1 && xpos < this.x2 && ypos > this.y1 && ypos < this.y2) {
-                return true;
-            }
-            else {
-                return false;
-            }
         }
     }
     
@@ -276,7 +267,6 @@ public class Play extends BasicGameState {
     
     TrueTypeFont font;
     
-    Button sound;
     
     //kou rouloukoukou rouloukoukou
     Stats stats; // #okjesors
@@ -420,7 +410,7 @@ public class Play extends BasicGameState {
         
         for (String letter : letters) {
             if (letter.charAt(0) != 'X') {
-                block.block.add(new Bg(new Image("res/bg-"+letter+".png"), nextwall));
+                block.add(new Bg(new Image("res/bg-"+letter+".png"), nextwall));
                 nextwall = false;
             }
             else {
@@ -442,12 +432,12 @@ public class Play extends BasicGameState {
      */
     public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
         
-        block.block.get(block.count).image.draw(block.pos.x,block.pos.y);
-        if (block.count < block.block.size() - 1) {
-            block.block.get(block.count + 1).image.draw(winSize.x + block.pos.x,block.pos.y);
+        block.get(block.count).image.draw(block.pos.x,block.pos.y);
+        if (block.count < block.size() - 1) {
+            block.get(block.count + 1).image.draw(winSize.x + block.pos.x,block.pos.y);
         }
         else {
-            block.block.get(0).image.draw(winSize.x + block.pos.x,block.pos.y);
+            block.get(0).image.draw(winSize.x + block.pos.x,block.pos.y);
         }
         
         
@@ -511,7 +501,7 @@ public class Play extends BasicGameState {
             block.count += 1;
             stats.write(block.count);
             stats.reset();
-            if (block.count == block.block.size()) {
+            if (block.count == block.size()) {
                 block.count = 0;
             }
         }
@@ -519,7 +509,7 @@ public class Play extends BasicGameState {
         /*
         Display the wall
         */
-        if (block.block.get((block.count + 1) % block.block.size()).wall) { // apparition du mur
+        if (block.get((block.count + 1) % block.size()).wall) { // apparition du mur
             wall.pos.x = winSize.x + block.pos.x;
             stats.timer += delta;
         }
