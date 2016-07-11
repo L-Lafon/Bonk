@@ -445,6 +445,13 @@ public class Play extends BasicGameState {
             block.get(0).image.draw(winSize.x + block.pos.x,block.pos.y);
         }
         
+        if (wall.broken != -1) {
+            wall.imgBroken[wall.broken].draw(wall.pos.x, wall.pos.y);
+        }
+        else{
+            wall.image.draw(wall.pos.x, wall.pos.y);
+        }
+        
         
         if (player.fury==false) {
             if (player.furyLoad) {
@@ -472,12 +479,7 @@ public class Play extends BasicGameState {
             player.furyImage.draw(player.pos.x, player.pos.y);
         } 
         
-        if (wall.broken != -1) {
-            wall.imgBroken[wall.broken].draw(wall.pos.x, wall.pos.y);
-        }
-        else{
-            wall.image.draw(wall.pos.x, wall.pos.y);
-        }
+        
         
         for (Coin coin:activeCoins) {
             coin.images[coinFrame].draw(coin.pos.x, coin.pos.y);
@@ -535,8 +537,14 @@ public class Play extends BasicGameState {
             stats.timer += delta;
         }
         else {
-            wall.pos.x = 640;
-            wall.broken = -1;
+            if (wall.pos.x > -64 && wall.pos.x < 640) {
+                wall.pos.x -= delta * wall.speed;
+            }
+            else {
+                wall.pos.x = 640;
+                wall.broken = -1;
+            }
+            
         }        
         
         /*
@@ -572,7 +580,7 @@ public class Play extends BasicGameState {
         /*
         Destroy the wall if on-screen
         */
-        if (wall.pos.x<640) {
+        if (wall.pos.x<640 && wall.pos.x>-64) {
             destroyWall();
         }
         
