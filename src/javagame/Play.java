@@ -11,13 +11,9 @@ import java.util.List;
 
 import java.awt.Font;
 import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.io.Writer;
-import org.lwjgl.input.Mouse;
 
 import org.newdawn.slick.*;
 import org.newdawn.slick.geom.Polygon;
@@ -410,7 +406,7 @@ public class Play extends BasicGameState {
         
         for (String letter : letters) {
             if (letter.charAt(0) != 'X') {
-                block.add(new Bg(new Image("res/bg-"+letter+".png"), nextwall));
+                block.add(new Play.Bg(new Image("res/bg-"+letter+".png"), nextwall));
                 nextwall = false;
             }
             else {
@@ -492,6 +488,15 @@ public class Play extends BasicGameState {
     public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
         block.pos.x -= delta * block.speed;
         Input input = gc.getInput();
+        
+        
+        if (input.isKeyPressed(Input.KEY_A)) {
+            gc.setFullscreen(true);
+        }
+        if (input.isKeyPressed(Input.KEY_Z)) {
+            gc.setFullscreen(false);
+        }
+        
         
         /*
         Display next Bg

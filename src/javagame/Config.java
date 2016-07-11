@@ -6,6 +6,11 @@
  */
 package javagame;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.ini4j.Wini;
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.*;
 import org.newdawn.slick.state.*;
@@ -45,6 +50,7 @@ public class Config extends BasicGameState {
             this.y1 = y1;
             this.x2 = x1 + this.image.getWidth();
             this.y2 = y1 + this.image.getHeight();
+            this.active = false;
         }
         /**
          * Hover method checks if the mouse pointer is on the button
@@ -58,7 +64,8 @@ public class Config extends BasicGameState {
     }
     
     Image bgConfig;
-    Button buttonBack;
+    Button buttonBack, buttonFS;
+    Wini ini;
     
     /**
      * Initialise the backgroung and buttons used
@@ -71,6 +78,16 @@ public class Config extends BasicGameState {
         bgConfig = new Image("res/config.png");
         
         buttonBack = new Config.Button(new Image("res/Back.png"), new Image("res/BackActive.png"),128,256);
+        buttonFS = new Config.Button(new Image("res/button_off.png"), new Image("res/button_on.png"), 0, 0);
+        
+        try {
+            ini = new Wini(new File("settings.ini"));
+            boolean fs = ini.get("Display", "fullscreen", boolean.class);
+            buttonFS.active = fs;
+        } catch (IOException ex) {
+            Logger.getLogger(Config.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }
     
     /**
@@ -89,6 +106,13 @@ public class Config extends BasicGameState {
         }
         else {
             g.drawImage(buttonBack.image, buttonBack.x1, buttonBack.y1);
+        }
+        
+        if (buttonFS.active) {
+            g.drawImage(buttonFS.imageActive, buttonFS.x1, buttonFS.y1);
+        }
+        else {
+            g.drawImage(buttonFS.image, buttonFS.x1, buttonFS.y1);
         }
     }
     
@@ -114,6 +138,17 @@ public class Config extends BasicGameState {
         }
         else {
             buttonBack.active = false;
+        }
+        
+        if (buttonFS.hover(xpos, ypos) && input.isMousePressed(0)) {
+            try {
+                buttonFS.active = !buttonFS.active;
+                gc.setFullscreen(buttonFS.active);
+                ini.put("Display", "fullscreen", buttonFS.active);
+                ini.store();
+            } catch (IOException ex) {
+                Logger.getLogger(Config.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
     

@@ -1,5 +1,8 @@
 package javagame;
 
+import java.io.File;
+import java.io.IOException;
+import org.ini4j.Wini;
 import org.newdawn.slick.*;
 import org.newdawn.slick.state.*;
 
@@ -27,6 +30,9 @@ public class Game extends StateBasedGame {
         this.addState(new Config(CONFIG));
     }
     
+    
+    
+    
     /**
      * 
      * @param gc the game container
@@ -45,12 +51,14 @@ public class Game extends StateBasedGame {
      * 
      * @param args 
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         AppGameContainer appgc;
+        Wini ini = new Wini(new File("settings.ini"));
+        boolean fs = ini.get("Display", "fullscreen", boolean.class);
         try {
             appgc = new AppGameContainer(new Game(GAMENAME));
             appgc.setShowFPS(false);
-            appgc.setDisplayMode(640, 480, false);
+            appgc.setDisplayMode(640, 480, fs);
             appgc.start();
         }
         catch(SlickException e) {
