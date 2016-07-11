@@ -154,7 +154,9 @@ public class Play extends BasicGameState {
     class Wall {
         Vec2D pos;
         Image image;
+        Image[] imgBroken;
         float speed;
+        int broken;
         
         /**
          * Creates a wall with an image, a Vec2D (position) and a speed
@@ -162,8 +164,14 @@ public class Play extends BasicGameState {
          */
         public Wall() throws SlickException {
             this.image = new Image("res/wall.png");
+            this.imgBroken = new Image[] {
+                new Image("res/wall_0.png"),
+                new Image("res/wall_1.png"),
+                new Image("res/wall_2.png")
+            };
             this.pos = new Vec2D(640,120);
             this.speed = SPEED;
+            this.broken = -1;
         }
     }
     
@@ -299,14 +307,15 @@ public class Play extends BasicGameState {
             }
         );
         
-        if(playerPoly.intersects(wallPoly)) {
+        if(wall.broken == -1 && playerPoly.intersects(wallPoly)) {
             if (player.fury==false) {
             System.out.println("GAME OVER");
             //sbg.enterState(0);
             }
             else {
                 System.out.println("WALL DESTROYING");
-                wall.pos.x = -100;
+                wall.broken = player.row;
+                //wall.pos.x = -500;
             } 
         }
     }
@@ -463,8 +472,12 @@ public class Play extends BasicGameState {
             player.furyImage.draw(player.pos.x, player.pos.y);
         } 
         
-        
-        wall.image.draw(wall.pos.x, wall.pos.y);
+        if (wall.broken != -1) {
+            wall.imgBroken[wall.broken].draw(wall.pos.x, wall.pos.y);
+        }
+        else{
+            wall.image.draw(wall.pos.x, wall.pos.y);
+        }
         
         for (Coin coin:activeCoins) {
             coin.images[coinFrame].draw(coin.pos.x, coin.pos.y);
@@ -496,6 +509,9 @@ public class Play extends BasicGameState {
         if (input.isKeyPressed(Input.KEY_Z)) {
             gc.setFullscreen(false);
         }
+        if (input.isKeyPressed(Input.KEY_ESCAPE)) {
+            sbg.enterState(0);
+        }
         
         
         /*
@@ -520,6 +536,7 @@ public class Play extends BasicGameState {
         }
         else {
             wall.pos.x = 640;
+            wall.broken = -1;
         }        
         
         /*
