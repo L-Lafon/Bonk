@@ -6,6 +6,7 @@
  */
 package javagame;
 
+import java.awt.Font;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -64,8 +65,9 @@ public class Config extends BasicGameState {
     }
     
     Image bgConfig;
-    Button buttonBack, buttonFS;
+    Button buttonBack, buttonFS, buttonMusic, buttonSFX;
     Wini ini;
+    TrueTypeFont font;
     
     /**
      * Initialise the backgroung and buttons used
@@ -77,13 +79,19 @@ public class Config extends BasicGameState {
     public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
         bgConfig = new Image("res/config.png");
         
-        buttonBack = new Config.Button(new Image("res/Back.png"), new Image("res/BackActive.png"),128,256);
-        buttonFS = new Config.Button(new Image("res/button_off.png"), new Image("res/button_on.png"), 0, 0);
+        Font awtFont = new Font("Lucida Sans", Font.BOLD, 48) {};
+        font = new TrueTypeFont(awtFont, false);
+        
+        buttonBack = new Config.Button(new Image("res/Back.png"), new Image("res/BackActive.png"),10,10);
+        buttonFS = new Config.Button(new Image("res/button_off.png"), new Image("res/button_on.png"), 450, 150);
+        buttonMusic = new Config.Button(new Image("res/button_off.png"), new Image("res/button_on.png"), 450, 250);
+        buttonSFX = new Config.Button(new Image("res/button_off.png"), new Image("res/button_on.png"), 450, 350);
         
         try {
             ini = new Wini(new File("settings.ini"));
-            boolean fs = ini.get("Display", "fullscreen", boolean.class);
-            buttonFS.active = fs;
+            buttonFS.active = ini.get("Display", "fullscreen", boolean.class);
+            buttonMusic.active = ini.get("Sound", "music", boolean.class);
+            buttonSFX.active = ini.get("Sound", "sfx", boolean.class);
         } catch (IOException ex) {
             Logger.getLogger(Config.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -108,12 +116,27 @@ public class Config extends BasicGameState {
             g.drawImage(buttonBack.image, buttonBack.x1, buttonBack.y1);
         }
         
-        if (buttonFS.active) {
-            g.drawImage(buttonFS.imageActive, buttonFS.x1, buttonFS.y1);
+        g.setFont(font);
+        g.setColor(Color.black);
+        g.drawString("Fullscreen", 53, 153);
+        g.drawString("Music", 53, 253);
+        g.drawString("Sound effects", 53, 353);
+        g.setColor(Color.yellow);
+        g.drawString("Fullscreen", 50, 150);
+        g.drawString("Music", 50, 250);
+        g.drawString("Sound effects", 50, 350);
+        
+        
+        Button[] buts = new Button[] {buttonFS, buttonMusic, buttonSFX};
+        for (Button but:buts) {
+            if (but.active) {
+                g.drawImage(but.imageActive, but.x1, but.y1);
+            }
+            else {
+                g.drawImage(but.image, but.x1, but.y1);
+            }
         }
-        else {
-            g.drawImage(buttonFS.image, buttonFS.x1, buttonFS.y1);
-        }
+        
     }
     
     /**
@@ -145,6 +168,26 @@ public class Config extends BasicGameState {
                 buttonFS.active = !buttonFS.active;
                 gc.setFullscreen(buttonFS.active);
                 ini.put("Display", "fullscreen", buttonFS.active);
+                ini.store();
+            } catch (IOException ex) {
+                Logger.getLogger(Config.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+        if (buttonMusic.hover(xpos, ypos) && input.isMousePressed(0)) {
+            try {
+                buttonMusic.active = !buttonMusic.active;
+                ini.put("Sound", "music", buttonMusic.active);
+                ini.store();
+            } catch (IOException ex) {
+                Logger.getLogger(Config.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+        if (buttonSFX.hover(xpos, ypos) && input.isMousePressed(0)) {
+            try {
+                buttonSFX.active = !buttonSFX.active;
+                ini.put("Sound", "sfx", buttonSFX.active);
                 ini.store();
             } catch (IOException ex) {
                 Logger.getLogger(Config.class.getName()).log(Level.SEVERE, null, ex);
