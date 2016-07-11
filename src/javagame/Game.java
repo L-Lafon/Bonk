@@ -18,6 +18,8 @@ public class Game extends StateBasedGame {
     public static final int INSTR = 2;
     public static final int CONFIG = 3;
     
+    public static boolean ISFULLSCREEN, ISMUSIC, ISSFX;
+    
     /**
      * 
      * @param gamename 
@@ -54,11 +56,14 @@ public class Game extends StateBasedGame {
     public static void main(String[] args) throws IOException {
         AppGameContainer appgc;
         Wini ini = new Wini(new File("settings.ini"));
-        boolean fs = ini.get("Display", "fullscreen", boolean.class);
+        ISFULLSCREEN = ini.get("Display", "fullscreen", boolean.class);
+        ISMUSIC = ini.get("Sound", "music", boolean.class);
+        ISSFX = ini.get("Sound", "sfx", boolean.class);
+        
         try {
             appgc = new AppGameContainer(new Game(GAMENAME));
             appgc.setShowFPS(false);
-            appgc.setDisplayMode(640, 480, fs);
+            appgc.setDisplayMode(640, 480, ISFULLSCREEN);
             appgc.start();
         }
         catch(SlickException e) {

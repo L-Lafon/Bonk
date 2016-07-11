@@ -11,9 +11,13 @@ import java.util.List;
 
 import java.awt.Font;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.ini4j.Wini;
 
 import org.newdawn.slick.*;
 import org.newdawn.slick.geom.Polygon;
@@ -277,6 +281,10 @@ public class Play extends BasicGameState {
     
     FileWriter statfile;
     
+    Music music;
+    Sound sndWall, sndCoin, sndFury, sndLoad;
+    boolean isMusic, isSFX;
+    
     /**
      * Creates the play screen
      * @param state the index of the state in the state-based game
@@ -313,6 +321,7 @@ public class Play extends BasicGameState {
             //sbg.enterState(0);
             }
             else {
+                sndWall.play();
                 System.out.println("WALL DESTROYING");
                 wall.broken = player.row;
                 //wall.pos.x = -500;
@@ -368,6 +377,9 @@ public class Play extends BasicGameState {
                     player.score +=1;
                     stats.coins +=1 ;
                     inactiveCoins.add(coin);
+                    if (Game.ISSFX) {
+                        sndCoin.play();
+                    }
                 }
             }
         }
@@ -425,6 +437,21 @@ public class Play extends BasicGameState {
         }
         
         player = new Player();
+        
+        try {
+            Wini ini = new Wini(new File("settings.ini"));
+            isMusic = ini.get("Sound", "music", boolean.class);
+            isSFX = ini.get("Sound", "sfx", boolean.class);
+        } catch (IOException ex) {
+            Logger.getLogger(Config.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        music = new Music("res/thefatrat-unity.ogg");
+        sndCoin = new Sound("res/coin.wav");
+        sndLoad = new Sound("res/load.wav");
+        sndFury = new Sound("res/fury.wav");
+        sndWall = new Sound("res/wall.wav");
+        
         
     }
     
@@ -501,6 +528,10 @@ public class Play extends BasicGameState {
      * @throws SlickException 
      */
     public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
+        if (!music.playing() && Game.ISMUSIC) {
+            music.loop();
+            music.setVolume(0.5F);
+        }
         block.pos.x -= delta * block.speed;
         Input input = gc.getInput();
         
@@ -512,6 +543,7 @@ public class Play extends BasicGameState {
             gc.setFullscreen(false);
         }
         if (input.isKeyPressed(Input.KEY_ESCAPE)) {
+            music.stop();
             sbg.enterState(0);
         }
         
@@ -606,6 +638,7 @@ public class Play extends BasicGameState {
         Load Fury
         */
         if (input.isKeyPressed(Input.KEY_SPACE) && player.fury == false) {
+            sndLoad.play();
             player.furyLoad = true;
             stats.hasPressed = true;
             stats.tpsReac = stats.timer;
@@ -618,6 +651,9 @@ public class Play extends BasicGameState {
         Initiate Fury
         */
         if (player.furyLoadTime > player.furyLoadWait) {
+            if (Game.ISSFX) {
+                sndFury.play();
+            }
             player.furyLoad = false;
             player.fury = true;
             player.furyLoadTime = 0;

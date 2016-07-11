@@ -177,6 +177,7 @@ public class Config extends BasicGameState {
         if (buttonMusic.hover(xpos, ypos) && input.isMousePressed(0)) {
             try {
                 buttonMusic.active = !buttonMusic.active;
+                Game.ISMUSIC = buttonMusic.active;
                 ini.put("Sound", "music", buttonMusic.active);
                 ini.store();
             } catch (IOException ex) {
@@ -187,6 +188,7 @@ public class Config extends BasicGameState {
         if (buttonSFX.hover(xpos, ypos) && input.isMousePressed(0)) {
             try {
                 buttonSFX.active = !buttonSFX.active;
+                Game.ISSFX = buttonSFX.active;
                 ini.put("Sound", "sfx", buttonSFX.active);
                 ini.store();
             } catch (IOException ex) {
