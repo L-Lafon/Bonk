@@ -83,9 +83,9 @@ public class Config extends BasicGameState {
         font = new TrueTypeFont(awtFont, false);
         
         buttonBack = new Config.Button(new Image("res/Back.png"), new Image("res/BackActive.png"),10,10);
-        buttonFS = new Config.Button(new Image("res/button_off.png"), new Image("res/button_on.png"), 450, 150);
-        buttonMusic = new Config.Button(new Image("res/button_off.png"), new Image("res/button_on.png"), 450, 250);
-        buttonSFX = new Config.Button(new Image("res/button_off.png"), new Image("res/button_on.png"), 450, 350);
+        buttonFS = new Config.Button(new Image("res/button_off_new.png"), new Image("res/button_on_new.png"), 450, 150);
+        buttonMusic = new Config.Button(new Image("res/button_off_new.png"), new Image("res/button_on_new.png"), 450, 250);
+        buttonSFX = new Config.Button(new Image("res/button_off_new.png"), new Image("res/button_on_new.png"), 450, 350);
         
         try {
             ini = new Wini(new File("settings.ini"));
