@@ -45,7 +45,7 @@ public class Menu extends BasicGameState {
     }
     
     Image bgMenu;
-    Button buttonPlay, buttonInstr, buttonSettings, buttonSound;
+    Button buttonPlay, buttonInstr, buttonSettings, buttonExit;
     
     /**
      * 
@@ -68,7 +68,7 @@ public class Menu extends BasicGameState {
         buttonPlay = new Button(new Image("res/Play.png"), new Image("res/PlayActive.png"),128,256);
         buttonInstr = new Button(new Image("res/Instructions.png"), new Image("res/InstructionsActive.png"),128,320);
         buttonSettings = new Button(new Image("res/Settings.png"), new Image("res/SettingsActive.png"),128,384);
-        buttonSound = new Button(new Image("res/SoundOff.png"), new Image("res/SoundOn.png"), 500, 30);
+        buttonExit = new Button(new Image("res/Quit.png"), new Image("res/QuitActive.png"), 10, 10);
     }
     
     /**
@@ -82,31 +82,17 @@ public class Menu extends BasicGameState {
     public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
         g.drawImage(bgMenu, 0, 0);
         
-        if (buttonPlay.active) {
-            g.drawImage(buttonPlay.imageActive, buttonPlay.x1, buttonPlay.y1);
-        }
-        else {
-            g.drawImage(buttonPlay.image, buttonPlay.x1, buttonPlay.y1);
-        }
+        Button[] buts = new Button[] {
+            buttonPlay, buttonInstr, buttonSettings, buttonExit
+        };
         
-        if (buttonInstr.active) {
-            g.drawImage(buttonInstr.imageActive, buttonInstr.x1, buttonInstr.y1);
-        }
-        else {
-            g.drawImage(buttonInstr.image, buttonInstr.x1, buttonInstr.y1);
-        }
-        
-        if (buttonSettings.active) {
-            g.drawImage(buttonSettings.imageActive, buttonSettings.x1, buttonSettings.y1);
-        }
-        else {
-            g.drawImage(buttonSettings.image, buttonSettings.x1, buttonSettings.y1);
-        }
-        
-        if (buttonSound.active) {
-            g.drawImage(buttonSound.imageActive, buttonSound.x1, buttonSound.y1);
-        } else {
-            g.drawImage(buttonSound.image, buttonSound.x1, buttonSound.y1);
+        for (Button but:buts) {
+            if (but.active) {
+                g.drawImage(but.imageActive, but.x1, but.y1);
+            }
+            else {
+                g.drawImage(but.image, but.x1, but.y1);
+            }
         }
     }
     
@@ -152,12 +138,19 @@ public class Menu extends BasicGameState {
         else {
             buttonSettings.active = false;
         }
-        //System.out.println("Mouse : "+xpos+" , "+ypos);
-        if (buttonSound.hover(xpos, ypos)) {
+        
+        if (buttonExit.hover(xpos, ypos)) {
+            buttonExit.active = true;
             if (input.isMousePressed(0)) {
-                buttonSound.active = !buttonSound.active; // ! = not
+                gc.exit();
             }
         }
+        else {
+            buttonExit.active = false;
+        }
+        //System.out.println("Mouse : "+xpos+" , "+ypos);
+        
+        
     }
     
     /**
