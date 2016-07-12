@@ -17,8 +17,10 @@ public class Game extends StateBasedGame {
     public static final int PLAY = 1;
     public static final int INSTR = 2;
     public static final int CONFIG = 3;
+    public static final int LEVELSELECT = 4;
     
     public static boolean ISFULLSCREEN, ISMUSIC, ISSFX;
+    public static int LEVEL = 1;
     
     /**
      * 
@@ -30,6 +32,7 @@ public class Game extends StateBasedGame {
         this.addState(new Play(PLAY));
         this.addState(new Instr(INSTR));
         this.addState(new Config(CONFIG));
+        this.addState(new LevelSelect(LEVELSELECT));
     }
     
     
@@ -46,12 +49,14 @@ public class Game extends StateBasedGame {
         this.getState(PLAY).init(gc, this);
         this.getState(INSTR).init(gc, this);
         this.getState(CONFIG).init(gc, this);
+        this.getState(LEVELSELECT).init(gc, this);
         this.enterState(MENU);
     }
     
     /**
      * 
      * @param args 
+     * @throws java.io.IOException 
      */
     public static void main(String[] args) throws IOException {
         AppGameContainer appgc;

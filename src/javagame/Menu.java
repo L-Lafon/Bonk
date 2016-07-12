@@ -13,7 +13,7 @@ public class Menu extends BasicGameState {
     /**
      * All you need to create a button
      */
-    class Button {
+    public class Button {
         Image image, imageActive;
         int x1, x2, y1, y2;
         boolean active = false;
@@ -112,7 +112,7 @@ public class Menu extends BasicGameState {
         if (buttonPlay.hover(xpos, ypos)) {
             buttonPlay.active = true;
             if (input.isMousePressed(0)) {
-                sbg.enterState(1);
+                sbg.enterState(Game.LEVELSELECT);
             }
         }
         else {
@@ -122,7 +122,7 @@ public class Menu extends BasicGameState {
         if (buttonInstr.hover(xpos, ypos)) {
             buttonInstr.active = true;
             if (input.isMousePressed(0)) {
-                sbg.enterState(2);
+                sbg.enterState(Game.INSTR);
             }
         }
         else {
@@ -132,7 +132,7 @@ public class Menu extends BasicGameState {
         if (buttonSettings.hover(xpos, ypos)) {
             buttonSettings.active = true;
             if (input.isMousePressed(0)) {
-                sbg.enterState(3);
+                sbg.enterState(Game.CONFIG);
             }
         }
         else {

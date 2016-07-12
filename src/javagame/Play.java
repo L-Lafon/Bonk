@@ -421,7 +421,17 @@ public class Play extends BasicGameState {
         font = new TrueTypeFont(awtFont, false);
         
         //String[] letters = "EJQYEBBXBQYEJYQEXJYJJXBYXQBQXE".split("");
-        String[] letters = "YGXJYJYYQQEGXJGXEEGXQEGXBJQBBB".split("");
+        //String[] letters = "YGXJYJYYQQEGXJGXEEGXQEGXBJQBBB".split("");
+        String[] letters = null;
+        
+        try {
+            Wini lvlIni = new Wini(new File("levels.ini"));
+            letters = lvlIni.get(Integer.toString(Game.LEVEL), "RAN", String.class).split("");
+        } catch (IOException ex) {
+            letters = "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE".split("");
+            Logger.getLogger(Play.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
         
         boolean nextwall = false;
         
@@ -445,6 +455,9 @@ public class Play extends BasicGameState {
         } catch (IOException ex) {
             Logger.getLogger(Config.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        
+        
         
         music = new Music("res/thefatrat-unity.ogg");
         sndCoin = new Sound("res/coin.wav");
