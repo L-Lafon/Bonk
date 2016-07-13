@@ -200,6 +200,28 @@ public class Play extends BasicGameState {
         }
     }
     
+    class CoinManager {
+        List<Coin> activeCoins;
+        float coinStage, coinTime, coinWait, coinAnim;
+        int coinFrame;
+        float coinGroupTime, coinGroupWait;
+        int coinCount, coinMax;
+        boolean coinPause;
+        
+        public CoinManager() {
+            this.coinStage = 0;
+            this.activeCoins = new ArrayList<>();
+            this.coinTime = 0;
+            this.coinWait = 150;
+            this.coinAnim = 0;
+            this.coinFrame = 0;
+            this.coinGroupTime = 0;
+            this.coinGroupWait = 1000;
+            this.coinCount = 0;
+            this.coinMax = 5;
+        }
+    }
+    
     class Stats {
         /*
         tps de reaction
@@ -264,12 +286,7 @@ public class Play extends BasicGameState {
     
     Wall wall; // Make JAVA programming great again !
     
-    List<Coin> activeCoins;
-    float coinStage = 0;
-    float coinTime = 0;
-    float coinWait = 300;
-    float coinAnim = 0;
-    int coinFrame = 0;
+    CoinManager coins;
     
     float random = 0;
     
@@ -334,12 +351,12 @@ public class Play extends BasicGameState {
      * @throws SlickException 
      */
     public void createCoin() throws SlickException {
-        coinStage = (int)(Math.random() * 3);
+        coins.coinStage = (int)(Math.random() * 3);
         //System.out.println("creating coin");
         Coin coin = new Coin();
         coin.pos.x = 640;
-        coin.pos.y = 120*(coinStage+1)+35;
-        activeCoins.add(coin);
+        coin.pos.y = 120*(coins.coinStage+1)+35;
+        coins.activeCoins.add(coin);
     }
     
     /**
@@ -357,7 +374,7 @@ public class Play extends BasicGameState {
             }
         );
         
-        for(Coin coin: activeCoins) {
+        for(Coin coin: coins.activeCoins) {
             
             if (coin.pos.x < -50) {
                 inactiveCoins.add(coin);
@@ -383,7 +400,7 @@ public class Play extends BasicGameState {
                 }
             }
         }
-        activeCoins.removeAll(inactiveCoins);
+        coins.activeCoins.removeAll(inactiveCoins);
     }
     
     /**
@@ -414,8 +431,7 @@ public class Play extends BasicGameState {
         winSize = new Vec2D(gc.getWidth(), gc.getHeight());
         wall = new Wall();
         block = new Block();
-        activeCoins= new ArrayList<>();
-        
+        coins = new CoinManager();
         // initialisation police de caractère
         Font awtFont = new Font("Lucida Sans", Font.BOLD, 24) {};
         font = new TrueTypeFont(awtFont, false);
@@ -521,8 +537,8 @@ public class Play extends BasicGameState {
         
         
         
-        for (Coin coin:activeCoins) {
-            coin.images[coinFrame].draw(coin.pos.x, coin.pos.y);
+        for (Coin coin:coins.activeCoins) {
+            coin.images[coins.coinFrame].draw(coin.pos.x, coin.pos.y);
         }
         
         new Image("res/test_hud.png").draw();
@@ -632,18 +648,23 @@ public class Play extends BasicGameState {
         /*
         Create, move, animate and destroy coins
         */
-        coinTime += delta;
-        if (coinTime > coinWait) {
-            createCoin();
-            coinTime = 0;
+        coins.coinTime += delta;
+        coins.coinGroupTime += delta;
+        if (coins.coinGroupTime > coins.coinGroupWait) {
+            coins.coinPause = !coins.coinPause;
+            coins.coinGroupTime = 0;
         }
-        for (Coin coin : activeCoins) {
+        if (!coins.coinPause && coins.coinTime > coins.coinWait) {
+            createCoin();
+            coins.coinTime = 0;
+        }
+        for (Coin coin : coins.activeCoins) {
             coin.pos.x -= delta*coin.speed;
         }
-        coinAnim += delta;
-        if (coinAnim > 100) {
-            coinFrame = (coinFrame+1) % 4;
-            coinAnim = 0;
+        coins.coinAnim += delta;
+        if (coins.coinAnim > 100) {
+            coins.coinFrame = (coins.coinFrame+1) % 4;
+            coins.coinAnim = 0;
         }
         destroyCoin();
         
