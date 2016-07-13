@@ -62,6 +62,8 @@ public class Play extends BasicGameState {
         int score;
         int furySpr; // étape d'animation fury
         float furyAnimTime;
+        boolean malus;
+        float malusTime, malusWait;
         
         /**
          * Creates the main character
@@ -98,6 +100,9 @@ public class Play extends BasicGameState {
             this.furySpr = 0;
             this.score = 0;
             this.furyAnimTime = 0F;
+            this.malus = false;
+            this.malusTime = 0;
+            this.malusWait = 500;
         }
     }
     
@@ -299,8 +304,10 @@ public class Play extends BasicGameState {
     FileWriter statfile;
     
     Music music;
-    Sound sndWall, sndCoin, sndFury, sndLoad;
+    Sound sndWall, sndCoin, sndFury, sndLoad, sndMalus;
     boolean isMusic, isSFX;
+    
+    Image imgMalus;
     
     /**
      * Creates the play screen
@@ -332,9 +339,12 @@ public class Play extends BasicGameState {
             }
         );
         
-        if(wall.broken == -1 && playerPoly.intersects(wallPoly)) {
+        if(!player.malus && wall.broken == -1 && playerPoly.intersects(wallPoly)) {
             if (player.fury==false) {
             System.out.println("GAME OVER");
+            player.malus = true;
+            sndMalus.play();
+            player.score -= 10;
             //sbg.enterState(0);
             }
             else {
@@ -472,7 +482,7 @@ public class Play extends BasicGameState {
             Logger.getLogger(Config.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        
+        imgMalus = new Image("res/malus.png");
         
         
         music = new Music("res/thefatrat-unity.ogg");
@@ -480,6 +490,7 @@ public class Play extends BasicGameState {
         sndLoad = new Sound("res/load.wav");
         sndFury = new Sound("res/fury.wav");
         sndWall = new Sound("res/wall.wav");
+        sndMalus = new Sound("res/malus.wav");
         
         
     }
@@ -546,6 +557,10 @@ public class Play extends BasicGameState {
         g.setFont(font);
         g.setColor(Color.yellow);
         g.drawString(Integer.toString(player.score),515,56);
+        
+        if (player.malus) {
+            imgMalus.draw(player.pos.x + 150,player.pos.y + 25);
+        }
         
     }
     
@@ -643,6 +658,13 @@ public class Play extends BasicGameState {
         */
         if (wall.pos.x<640 && wall.pos.x>-64) {
             destroyWall();
+        }
+        if (player.malus) {
+            player.malusTime += delta;
+            if (player.malusTime > player.malusWait) {
+                player.malus = false;
+                player.malusTime = 0;
+            }
         }
         
         /*
