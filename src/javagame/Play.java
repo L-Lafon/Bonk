@@ -460,7 +460,7 @@ public class Play extends BasicGameState {
         
         
         music = new Music("res/thefatrat-unity.ogg");
-        sndCoin = new Sound("res/coin.wav");
+        sndCoin = new Sound("res/PickupCoin.wav");
         sndLoad = new Sound("res/load.wav");
         sndFury = new Sound("res/fury.wav");
         sndWall = new Sound("res/wall.wav");
