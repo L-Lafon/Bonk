@@ -18,9 +18,11 @@ public class Game extends StateBasedGame {
     public static final int INSTR = 2;
     public static final int CONFIG = 3;
     public static final int LEVELSELECT = 4;
+    public static final int PAUSE = 5;
     
     public static boolean ISFULLSCREEN, ISMUSIC, ISSFX;
     public static int LEVEL = 1;
+    public static int SUBLEVEL = 0;
     
     /**
      * 
@@ -33,6 +35,7 @@ public class Game extends StateBasedGame {
         this.addState(new Instr(INSTR));
         this.addState(new Config(CONFIG));
         this.addState(new LevelSelect(LEVELSELECT));
+        this.addState(new Pause(PAUSE));
     }
     
     
@@ -50,6 +53,7 @@ public class Game extends StateBasedGame {
         this.getState(INSTR).init(gc, this);
         this.getState(CONFIG).init(gc, this);
         this.getState(LEVELSELECT).init(gc, this);
+        this.getState(PAUSE).init(gc, this);
         this.enterState(MENU);
     }
     

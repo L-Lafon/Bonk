@@ -451,13 +451,16 @@ public class Play extends BasicGameState {
         String[] letters = null;
         
         try {
+            String[] names = new String[] {"RAN","NPE","PE"};
             Wini lvlIni = new Wini(new File("levels.ini"));
-            letters = lvlIni.get(Integer.toString(Game.LEVEL), "RAN", String.class).split("");
+            letters = lvlIni.get(Integer.toString(Game.LEVEL), names[Game.SUBLEVEL], String.class).split("");
         } catch (IOException ex) {
             letters = "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE".split("");
             Logger.getLogger(Play.class.getName()).log(Level.SEVERE, null, ex);
         }
         
+        block.add(new Play.Bg(new Image("res/bg-START.png"), false));
+        block.add(new Play.Bg(new Image("res/bg-START.png"), false));
         
         boolean nextwall = false;
         
@@ -471,6 +474,9 @@ public class Play extends BasicGameState {
             }
             
         }
+        
+        block.add(new Play.Bg(new Image("res/bg-FINISH.png"), false));
+        
         
         player = new Player();
         
@@ -508,9 +514,11 @@ public class Play extends BasicGameState {
         if (block.count < block.size() - 1) {
             block.get(block.count + 1).image.draw(winSize.x + block.pos.x,block.pos.y);
         }
+        /*
         else {
             block.get(0).image.draw(winSize.x + block.pos.x,block.pos.y);
         }
+        */
         
         if (wall.broken != -1) {
             wall.imgBroken[wall.broken].draw(wall.pos.x, wall.pos.y);
@@ -561,7 +569,8 @@ public class Play extends BasicGameState {
         if (player.malus) {
             imgMalus.draw(player.pos.x + 150,player.pos.y + 25);
         }
-        
+        g.drawString(Integer.toString(block.count)+" - "+Integer.toString(block.size()), 0, 0);
+        g.drawString(Integer.toString(Game.LEVEL)+" - "+Integer.toString(Game.SUBLEVEL), 0, 30);
     }
     
     /**
@@ -586,11 +595,12 @@ public class Play extends BasicGameState {
         if (input.isKeyPressed(Input.KEY_Z)) {
             gc.setFullscreen(false);
         }
+        /*
         if (input.isKeyPressed(Input.KEY_ESCAPE)) {
             music.stop();
             sbg.enterState(0);
         }
-        
+        */
         
         /*
         Display next Bg
@@ -600,9 +610,17 @@ public class Play extends BasicGameState {
             block.count += 1;
             stats.write(block.count);
             stats.reset();
-            if (block.count == block.size()) {
-                block.count = 0;
+            if (block.count == block.size()-1) {
+                music.stop();
+                if (Game.SUBLEVEL != 2) {
+                    sbg.getState(Game.PAUSE).init(gc, sbg);
+                    sbg.enterState(Game.PAUSE);
+                }
+                else {
+                    sbg.enterState(Game.MENU);
+                }
             }
+            
         }
         
         /*

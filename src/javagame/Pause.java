@@ -18,11 +18,7 @@ import org.newdawn.slick.state.StateBasedGame;
  *
  * @author corentin
  */
-public class LevelSelect extends BasicGameState {
-    
-    public LevelSelect(int state) {
-        
-    }
+public class Pause extends BasicGameState {
     
     /**
      * All you need to create a button
@@ -57,56 +53,49 @@ public class LevelSelect extends BasicGameState {
             return xpos > this.x1 && xpos < this.x2 && ypos > this.y1 && ypos < this.y2;
         }
     }
+    
+    Button ready;
 
-    Button[] buttons;
-
-    @Override
-    public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
-        Game.SUBLEVEL = 0;
-        buttons = new Button[] {
-            new Button(new Image("res/Button1.png"), new Image("res/Button1Active.png"), 64,  128),
-            new Button(new Image("res/Button2.png"), new Image("res/Button2Active.png"), 256, 128),
-            new Button(new Image("res/Button3.png"), new Image("res/Button3Active.png"), 448, 128),
-            new Button(new Image("res/Button4.png"), new Image("res/Button4Active.png"), 160, 320),
-            new Button(new Image("res/Button5.png"), new Image("res/Button5Active.png"), 352, 320),
-        };
+    Pause(int state) {
     }
 
     @Override
-    public void render(GameContainer gc, StateBasedGame sbg, Graphics grphcs) throws SlickException {
-        for (Button but:buttons) {
-            if (but.active) {
-                but.imageActive.draw(but.x1, but.y1);
-            }
-            else {
-                but.image.draw(but.x1, but.y1);
-            }
+    public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
+        Game.SUBLEVEL += 1;
+        ready = new Button(new Image("res/Ready.png"), new Image("res/ReadyActive.png"), 128, 320);
+    }
+
+    @Override
+    public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
+        g.drawString("you win",0,0);
+        if (ready.active) {
+            ready.imageActive.draw(ready.x1, ready.y1);
+        }
+        else {
+            ready.image.draw(ready.x1, ready.y1);
         }
     }
 
     @Override
-    public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
+    public void update(GameContainer gc, StateBasedGame sbg, int i) throws SlickException {
         Input input = gc.getInput();
         int xpos = Mouse.getX();
         int ypos = 480-Mouse.getY();
         
-        for (int x=0; x<=4; x++) {
-            if (buttons[x].hover(xpos, ypos)) {
-                buttons[x].active = true;
-                if (input.isMousePressed(0)) {
-                    Game.LEVEL = x+1;
-                    sbg.getState(Game.PLAY).init(gc, sbg);
-                    sbg.enterState(Game.PLAY);
-                }
+        if (ready.hover(xpos, ypos)) {
+            ready.active = true;
+            if (input.isMousePressed(0)) {
+                sbg.getState(Game.PLAY).init(gc, sbg);
+                sbg.enterState(Game.PLAY);
             }
-            else {
-                buttons[x].active = false;
-            }
+        }
+        else {
+            ready.active = false;
         }
     }
     
     @Override
     public int getID() {
-        return 4;
-    }    
+        return 5;
+    }
 }

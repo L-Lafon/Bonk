@@ -112,6 +112,7 @@ public class Menu extends BasicGameState {
         if (buttonPlay.hover(xpos, ypos)) {
             buttonPlay.active = true;
             if (input.isMousePressed(0)) {
+                sbg.getState(Game.LEVELSELECT).init(gc, sbg);
                 sbg.enterState(Game.LEVELSELECT);
             }
         }
