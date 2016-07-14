@@ -1,7 +1,9 @@
 package javagame;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import org.ini4j.Wini;
 import org.newdawn.slick.*;
 import org.newdawn.slick.state.*;
@@ -68,6 +70,13 @@ public class Game extends StateBasedGame {
         ISFULLSCREEN = ini.get("Display", "fullscreen", boolean.class);
         ISMUSIC = ini.get("Sound", "music", boolean.class);
         ISSFX = ini.get("Sound", "sfx", boolean.class);
+        
+        try {
+            Writer file = new FileWriter("data.csv");
+            file.write("block,condition,background,pressed,coins,reaction-time\n");
+            file.close();
+        } catch (IOException iOException) {
+        }
         
         try {
             appgc = new AppGameContainer(new Game(GAMENAME));

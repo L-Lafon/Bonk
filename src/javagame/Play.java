@@ -271,9 +271,12 @@ public class Play extends BasicGameState {
          * @param count index of the background
          */
         public void write(int count) {
+            String[] conds = new String[] {"RAN", "NPE", "PE"};
             try {
                     Writer file = new BufferedWriter(new FileWriter("data.csv", true));
-                    file.append(Integer.toString(count)+","
+                    file.append(Integer.toString(Game.LEVEL)+","
+                                +conds[Game.SUBLEVEL]+","
+                                +Integer.toString(count)+","
                                 +Boolean.toString(this.hasPressed)+","
                                 +Integer.toString(this.coins)+","
                                 +Float.toString(stats.tpsReac)+"\n");
@@ -430,12 +433,7 @@ public class Play extends BasicGameState {
      */
         stats = new Stats();
         
-        try {
-            Writer file = new FileWriter("data.csv");
-            file.write("background,pressed,coins,reaction-time\n");
-            file.close();
-        } catch (IOException iOException) {
-        }
+        
         
         
         winSize = new Vec2D(gc.getWidth(), gc.getHeight());
