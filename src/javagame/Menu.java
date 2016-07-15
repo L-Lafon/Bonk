@@ -63,12 +63,12 @@ public class Menu extends BasicGameState {
      */
     @Override
     public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
-        bgMenu = new Image("res/title_new.png");
+        bgMenu = new Image("res/backgrounds/title_new.png");
         
-        buttonPlay = new Button(new Image("res/Play.png"), new Image("res/PlayActive.png"),128,256);
-        buttonInstr = new Button(new Image("res/Instructions.png"), new Image("res/InstructionsActive.png"),128,320);
-        buttonSettings = new Button(new Image("res/Settings.png"), new Image("res/SettingsActive.png"),128,384);
-        buttonExit = new Button(new Image("res/Quit.png"), new Image("res/QuitActive.png"), 10, 10);
+        buttonPlay = new Button(new Image("res/buttons/Play.png"), new Image("res/buttons/PlayActive.png"),128,256);
+        buttonInstr = new Button(new Image("res/buttons/Instructions.png"), new Image("res/buttons/InstructionsActive.png"),128,320);
+        buttonSettings = new Button(new Image("res/buttons/Settings.png"), new Image("res/buttons/SettingsActive.png"),128,384);
+        buttonExit = new Button(new Image("res/buttons/Quit.png"), new Image("res/buttons/QuitActive.png"), 10, 10);
     }
     
     /**

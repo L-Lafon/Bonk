@@ -75,12 +75,12 @@ public class Game extends StateBasedGame {
         ISSFX = ini.get("Sound", "sfx", boolean.class);
         
         OST = new Music[] {
-            new Music("res/thefatrat-unity.ogg"),
-            new Music("res/thefatrat-monody.ogg"),
-            new Music("res/thefatrat-dancing-naked.ogg"),
-            new Music("res/thefatrat-windfall.ogg"),
-            new Music("res/thefatrat-time-lapse.ogg"),
-            new Music("res/thefatrat-infinite-power.ogg")
+            new Music("res/music/thefatrat-unity.ogg"),
+            new Music("res/music/thefatrat-monody.ogg"),
+            new Music("res/music/thefatrat-dancing-naked.ogg"),
+            new Music("res/music/thefatrat-windfall.ogg"),
+            new Music("res/music/thefatrat-time-lapse.ogg"),
+            new Music("res/music/thefatrat-infinite-power.ogg")
         };
         
         try {

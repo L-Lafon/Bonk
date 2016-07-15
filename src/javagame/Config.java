@@ -77,15 +77,15 @@ public class Config extends BasicGameState {
      */
     @Override
     public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
-        bgConfig = new Image("res/config.png");
+        bgConfig = new Image("res/backgrounds/config.png");
         
         Font awtFont = new Font("Lucida Sans", Font.BOLD, 48) {};
         font = new TrueTypeFont(awtFont, false);
         
-        buttonBack = new Config.Button(new Image("res/Back.png"), new Image("res/BackActive.png"),10,10);
-        buttonFS = new Config.Button(new Image("res/button_off_new.png"), new Image("res/button_on_new.png"), 450, 150);
-        buttonMusic = new Config.Button(new Image("res/button_off_new.png"), new Image("res/button_on_new.png"), 450, 250);
-        buttonSFX = new Config.Button(new Image("res/button_off_new.png"), new Image("res/button_on_new.png"), 450, 350);
+        buttonBack = new Config.Button(new Image("res/buttons/Back.png"), new Image("res/buttons/BackActive.png"),10,10);
+        buttonFS = new Config.Button(new Image("res/buttons/button_off_new.png"), new Image("res/buttons/button_on_new.png"), 450, 150);
+        buttonMusic = new Config.Button(new Image("res/buttons/button_off_new.png"), new Image("res/buttons/button_on_new.png"), 450, 250);
+        buttonSFX = new Config.Button(new Image("res/buttons/button_off_new.png"), new Image("res/buttons/button_on_new.png"), 450, 350);
         
         try {
             ini = new Wini(new File("settings.ini"));

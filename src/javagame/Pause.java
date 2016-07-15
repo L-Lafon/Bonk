@@ -62,7 +62,7 @@ public class Pause extends BasicGameState {
     @Override
     public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
         Game.SUBLEVEL += 1;
-        ready = new Button(new Image("res/Ready.png"), new Image("res/ReadyActive.png"), 128, 320);
+        ready = new Button(new Image("res/buttons/Ready.png"), new Image("res/buttons/ReadyActive.png"), 128, 320);
     }
 
     @Override

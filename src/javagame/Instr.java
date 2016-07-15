@@ -68,9 +68,9 @@ public class Instr extends BasicGameState {
      */
     @Override
     public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
-        bgInstr = new Image("res/instr.png");
+        bgInstr = new Image("res/backgrounds/instr.png");
         
-        buttonBack = new Button(new Image("res/Back.png"), new Image("res/BackActive.png"),128,256);
+        buttonBack = new Button(new Image("res/buttons/Back.png"), new Image("res/buttons/BackActive.png"),128,256);
     }
     
     /**

@@ -70,7 +70,7 @@ public class Play extends BasicGameState {
          * @throws SlickException 
          */
         public Player() throws SlickException {
-            this.image = new Image("res/idee_perso.png");
+            this.image = new Image("res/sprites/idee_perso.png");
             this.row = 1;
             this.pos = new Vec2D(30,120*(this.row+1)+10);
             this.speed = 0F;
@@ -84,18 +84,18 @@ public class Play extends BasicGameState {
             this.furyLoadTime = 0; // timer de chargement de la furie
             this.furyLoadWait = 500; // tps de chargement de la furie
             this.furyStep = 0;
-            this.furyImage = new Image("res/idee_perso_fury.png");
+            this.furyImage = new Image("res/sprites/idee_perso_fury.png");
             this.furyAnimation = new Image[] {
-                new Image("res/idee_perso1.png"),
-                new Image("res/idee_perso2.png"),
-                new Image("res/idee_perso3.png"),
-                new Image("res/idee_perso4.png"),
+                new Image("res/sprites/idee_perso1.png"),
+                new Image("res/sprites/idee_perso2.png"),
+                new Image("res/sprites/idee_perso3.png"),
+                new Image("res/sprites/idee_perso4.png"),
             };
             this.flames = new Image[] {
-                new Image("res/flame_effect_1.png"),
-                new Image("res/flame_effect_2.png"),
-                new Image("res/flame_effect_3.png"),
-                new Image("res/flame_effect_4.png"),
+                new Image("res/sprites/flame_effect_1.png"),
+                new Image("res/sprites/flame_effect_2.png"),
+                new Image("res/sprites/flame_effect_3.png"),
+                new Image("res/sprites/flame_effect_4.png"),
             };
             this.furySpr = 0;
             this.score = 0;
@@ -172,11 +172,11 @@ public class Play extends BasicGameState {
          * @throws SlickException 
          */
         public Wall() throws SlickException {
-            this.image = new Image("res/wall.png");
+            this.image = new Image("res/sprites/wall.png");
             this.imgBroken = new Image[] {
-                new Image("res/wall_0.png"),
-                new Image("res/wall_1.png"),
-                new Image("res/wall_2.png")
+                new Image("res/sprites/wall_0.png"),
+                new Image("res/sprites/wall_1.png"),
+                new Image("res/sprites/wall_2.png")
             };
             this.pos = new Vec2D(640,120);
             this.speed = SPEED;
@@ -195,10 +195,10 @@ public class Play extends BasicGameState {
          */
         public Coin() throws SlickException {
             this.images = new Image[] {
-                new Image("res/coin1.png"),
-                new Image("res/coin2.png"),
-                new Image("res/coin3.png"),
-                new Image("res/coin4.png"),
+                new Image("res/sprites/coin1.png"),
+                new Image("res/sprites/coin2.png"),
+                new Image("res/sprites/coin3.png"),
+                new Image("res/sprites/coin4.png"),
             };
             this.pos = new Vec2D(640,120);
             this.speed = SPEED;
@@ -457,14 +457,14 @@ public class Play extends BasicGameState {
             Logger.getLogger(Play.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        block.add(new Play.Bg(new Image("res/bg-START.png"), false));
-        block.add(new Play.Bg(new Image("res/bg-START.png"), false));
+        block.add(new Play.Bg(new Image("res/backgrounds/bg-START.png"), false));
+        block.add(new Play.Bg(new Image("res/backgrounds/bg-START.png"), false));
         
         boolean nextwall = false;
         
         for (String letter : letters) {
             if (letter.charAt(0) != 'X') {
-                block.add(new Play.Bg(new Image("res/bg-"+letter+".png"), nextwall));
+                block.add(new Play.Bg(new Image("res/backgrounds/bg-"+letter+".png"), nextwall));
                 nextwall = false;
             }
             else {
@@ -473,7 +473,7 @@ public class Play extends BasicGameState {
             
         }
         
-        block.add(new Play.Bg(new Image("res/bg-FINISH.png"), false));
+        block.add(new Play.Bg(new Image("res/backgrounds/bg-FINISH.png"), false));
         
         
         player = new Player();
@@ -486,15 +486,15 @@ public class Play extends BasicGameState {
             Logger.getLogger(Config.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        imgMalus = new Image("res/malus.png");
+        imgMalus = new Image("res/sprites/malus.png");
         
         
         music = Game.OST[(int) (Math.random()*Game.OST.length)];
-        sndCoin = new Sound("res/PickupCoin.wav");
-        sndLoad = new Sound("res/load.wav");
-        sndFury = new Sound("res/fury.wav");
-        sndWall = new Sound("res/wall.wav");
-        sndMalus = new Sound("res/malus.wav");
+        sndCoin = new Sound("res/sounds/PickupCoin.wav");
+        sndLoad = new Sound("res/sounds/load.wav");
+        sndFury = new Sound("res/sounds/fury.wav");
+        sndWall = new Sound("res/sounds/wall.wav");
+        sndMalus = new Sound("res/sounds/malus.wav");
         
         
     }

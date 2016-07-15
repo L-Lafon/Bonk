@@ -65,16 +65,16 @@ public class LevelSelect extends BasicGameState {
     public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
         Game.SUBLEVEL = 0;
         buttons = new Button[] {
-            new Button(new Image("res/Button1.png"), new Image("res/Button1Active.png"), 64,  128),
-            new Button(new Image("res/Button2.png"), new Image("res/Button2Active.png"), 256, 128),
-            new Button(new Image("res/Button3.png"), new Image("res/Button3Active.png"), 448, 128),
-            new Button(new Image("res/Button4.png"), new Image("res/Button4Active.png"), 160, 320),
-            new Button(new Image("res/Button5.png"), new Image("res/Button5Active.png"), 352, 320),
+            new Button(new Image("res/buttons/Button1.png"), new Image("res/buttons/Button1Active.png"), 64,  128),
+            new Button(new Image("res/buttons/Button2.png"), new Image("res/buttons/Button2Active.png"), 256, 128),
+            new Button(new Image("res/buttons/Button3.png"), new Image("res/buttons/Button3Active.png"), 448, 128),
+            new Button(new Image("res/buttons/Button4.png"), new Image("res/buttons/Button4Active.png"), 160, 320),
+            new Button(new Image("res/buttons/Button5.png"), new Image("res/buttons/Button5Active.png"), 352, 320),
         };
         butDisabled = new Image[] {
-            new Image("res/Button1Inactive.png"), new Image("res/Button2Inactive.png"),
-            new Image("res/Button3Inactive.png"), new Image("res/Button4Inactive.png"), 
-            new Image("res/Button5Inactive.png")
+            new Image("res/buttons/Button1Inactive.png"), new Image("res/buttons/Button2Inactive.png"),
+            new Image("res/buttons/Button3Inactive.png"), new Image("res/buttons/Button4Inactive.png"), 
+            new Image("res/buttons/Button5Inactive.png")
         };
     }
 
