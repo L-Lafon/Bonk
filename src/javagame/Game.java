@@ -25,6 +25,9 @@ public class Game extends StateBasedGame {
     public static boolean ISFULLSCREEN, ISMUSIC, ISSFX;
     public static int LEVEL = 1;
     public static int SUBLEVEL = 0;
+    public static boolean[] LEVELSPASSED = {false,false,false,false,false};
+    
+    public static Music[] OST;
     
     /**
      * 
@@ -64,12 +67,21 @@ public class Game extends StateBasedGame {
      * @param args 
      * @throws java.io.IOException 
      */
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, SlickException {
         AppGameContainer appgc;
         Wini ini = new Wini(new File("settings.ini"));
         ISFULLSCREEN = ini.get("Display", "fullscreen", boolean.class);
         ISMUSIC = ini.get("Sound", "music", boolean.class);
         ISSFX = ini.get("Sound", "sfx", boolean.class);
+        
+        OST = new Music[] {
+            new Music("res/thefatrat-unity.ogg"),
+            new Music("res/thefatrat-monody.ogg"),
+            new Music("res/thefatrat-dancing-naked.ogg"),
+            new Music("res/thefatrat-windfall.ogg"),
+            new Music("res/thefatrat-time-lapse.ogg"),
+            new Music("res/thefatrat-infinite-power.ogg")
+        };
         
         try {
             Writer file = new FileWriter("data.csv");

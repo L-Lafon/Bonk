@@ -446,7 +446,7 @@ public class Play extends BasicGameState {
         
         //String[] letters = "EJQYEBBXBQYEJYQEXJYJJXBYXQBQXE".split("");
         //String[] letters = "YGXJYJYYQQEGXJGXEEGXQEGXBJQBBB".split("");
-        String[] letters = null;
+        String[] letters;
         
         try {
             String[] names = new String[] {"RAN","NPE","PE"};
@@ -489,7 +489,7 @@ public class Play extends BasicGameState {
         imgMalus = new Image("res/malus.png");
         
         
-        music = new Music("res/thefatrat-unity.ogg");
+        music = Game.OST[(int) (Math.random()*Game.OST.length)];
         sndCoin = new Sound("res/PickupCoin.wav");
         sndLoad = new Sound("res/load.wav");
         sndFury = new Sound("res/fury.wav");

@@ -59,6 +59,7 @@ public class LevelSelect extends BasicGameState {
     }
 
     Button[] buttons;
+    Image[] butDisabled;
 
     @Override
     public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
@@ -70,16 +71,26 @@ public class LevelSelect extends BasicGameState {
             new Button(new Image("res/Button4.png"), new Image("res/Button4Active.png"), 160, 320),
             new Button(new Image("res/Button5.png"), new Image("res/Button5Active.png"), 352, 320),
         };
+        butDisabled = new Image[] {
+            new Image("res/Button1Inactive.png"), new Image("res/Button2Inactive.png"),
+            new Image("res/Button3Inactive.png"), new Image("res/Button4Inactive.png"), 
+            new Image("res/Button5Inactive.png")
+        };
     }
 
     @Override
     public void render(GameContainer gc, StateBasedGame sbg, Graphics grphcs) throws SlickException {
-        for (Button but:buttons) {
-            if (but.active) {
-                but.imageActive.draw(but.x1, but.y1);
+        for (int x=0; x<=4; x++) {
+            if (!Game.LEVELSPASSED[x]) {
+                if (buttons[x].active) {
+                    buttons[x].imageActive.draw(buttons[x].x1, buttons[x].y1);
+                }
+                else {
+                    buttons[x].image.draw(buttons[x].x1, buttons[x].y1);
+                }
             }
             else {
-                but.image.draw(but.x1, but.y1);
+                butDisabled[x].draw(buttons[x].x1, buttons[x].y1);
             }
         }
     }
@@ -91,9 +102,10 @@ public class LevelSelect extends BasicGameState {
         int ypos = 480-Mouse.getY();
         
         for (int x=0; x<=4; x++) {
-            if (buttons[x].hover(xpos, ypos)) {
+            if (!Game.LEVELSPASSED[x] && buttons[x].hover(xpos, ypos)) {
                 buttons[x].active = true;
                 if (input.isMousePressed(0)) {
+                    Game.LEVELSPASSED[x] = true;
                     Game.LEVEL = x+1;
                     sbg.getState(Game.PLAY).init(gc, sbg);
                     sbg.enterState(Game.PLAY);
