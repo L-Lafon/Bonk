@@ -489,8 +489,8 @@ public class Play extends BasicGameState {
         
         imgMalus = new Image("res/sprites/malus.png");
         
-        
-        music = Game.OST[(int) (Math.random()*Game.OST.length)];
+        music = Game.OST[3];
+        //music = Game.OST[(int) (Math.random()*Game.OST.length)];
         sndCoin = new Sound("res/sounds/PickupCoin.wav");
         sndLoad = new Sound("res/sounds/load.wav");
         sndFury = new Sound("res/sounds/fury.wav");
