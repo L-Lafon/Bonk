@@ -270,19 +270,20 @@ public class Play extends BasicGameState {
          * Writes the stats to a .csv file
          * @param count index of the background
          */
-        public void write(int count) {
+        public void write(int count, boolean wall) {
             String[] conds = new String[] {"RAN", "NPE", "PE"};
             try {
-                    Writer file = new BufferedWriter(new FileWriter("data.csv", true));
-                    file.append(Integer.toString(Game.LEVEL)+","
-                                +conds[Game.SUBLEVEL]+","
-                                +Integer.toString(count)+","
-                                +Boolean.toString(this.hasPressed)+","
-                                +Integer.toString(this.coins)+","
-                                +Float.toString(stats.tpsReac)+"\n");
-                    file.close();
-                } catch (IOException iOException) {
-                }
+                Writer file = new BufferedWriter(new FileWriter("data.csv", true));
+                file.append(Integer.toString(Game.LEVEL)+","
+                            +conds[Game.SUBLEVEL]+","
+                            +Integer.toString(count)+","
+                            +Boolean.toString(wall)+","
+                            +Boolean.toString(this.hasPressed)+","
+                            +Integer.toString(this.coins)+","
+                            +Float.toString(stats.tpsReac)+"\n");
+                file.close();
+            } catch (IOException iOException) {
+            }
         }
     }
     
@@ -606,7 +607,7 @@ public class Play extends BasicGameState {
         if (block.pos.x < -winSize.x) {
             block.pos.x = 0;
             block.count += 1;
-            stats.write(block.count);
+            stats.write(block.count,block.get(block.count).wall);
             stats.reset();
             if (block.count == block.size()-1) {
                 music.stop();
