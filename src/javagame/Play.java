@@ -610,7 +610,7 @@ public class Play extends BasicGameState {
             stats.write(block.count,block.get(block.count).wall);
             stats.reset();
             if (block.count == block.size()-1) {
-                music.stop();
+                //music.stop();
                 if (Game.SUBLEVEL != 2) {
                     sbg.getState(Game.PAUSE).init(gc, sbg);
                     sbg.enterState(Game.PAUSE);
