@@ -450,8 +450,9 @@ public class Play extends BasicGameState {
         String[] letters;
         
         try {
-            String[] names = new String[] {"RAN","NPE","PE"};
+            String[] names;
             Wini lvlIni = new Wini(new File("levels.ini"));
+            names = lvlIni.get(Integer.toString(Game.LEVEL), "order", String.class).split(",");
             letters = lvlIni.get(Integer.toString(Game.LEVEL), names[Game.SUBLEVEL], String.class).split("");
         } catch (IOException ex) {
             letters = "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE".split("");
@@ -474,7 +475,7 @@ public class Play extends BasicGameState {
             
         }
         
-        block.add(new Play.Bg(new Image("res/backgrounds/bg-FINISH.png"), false));
+        block.add(new Play.Bg(new Image("res/backgrounds/bg-FINISH.png"), nextwall));
         
         
         player = new Player();
@@ -489,8 +490,8 @@ public class Play extends BasicGameState {
         
         imgMalus = new Image("res/sprites/malus.png");
         
-        music = Game.OST[3];
-        //music = Game.OST[(int) (Math.random()*Game.OST.length)];
+        //music = Game.OST[3];
+        music = Game.OST[(int) (Math.random()*Game.OST.length)];
         sndCoin = new Sound("res/sounds/PickupCoin.wav");
         sndLoad = new Sound("res/sounds/load.wav");
         sndFury = new Sound("res/sounds/fury.wav");
