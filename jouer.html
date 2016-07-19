@@ -54,7 +54,7 @@
 			<h4>Compléter le formulaire suivant et appuyer sur Start pour commencer.</h4>
 			<p>Nous avons simplement besoin de quelques informations anonymisées qui serviront à l'étude.
 			</p>
-			<form method="port" action="jouer.html" role="form" id="frm1">
+			<form method="port" action="jouer.html" role="form" name=formu>
 				<div class="form-group">
 				    <label class="control-label col-sm-2" for="pseudo">Pseudo</label>
 				    <div class="col-sm-10">
@@ -62,10 +62,11 @@
 				    </div>
 				</div>
 		 		<div class="form-group">
-		 		<label class="control-label col-sm-2" for="pseudo">Nouveau joueur</label>
-		 			<div class="col-sm-offset-2 col-sm-10">
+		 		<label class="control-label col-sm-2" for="pseudo">Premier essai ?</label>
+		 			<div class="col-sm-10">
     					<div class="checkbox">
-		    				<label>Est-ce la première fois que vous jouez au jeu?<input type="checkbox"></label>
+			    				<input type="radio" name="radi" value="Oui">Oui<input type="radio" name="radi" value="Non">Non
+		    				
 		    			</div>
 		    		</div>
 				</div>
@@ -76,22 +77,9 @@
 				</div>
 
 			</form>
+
+			
 		</div>
-
-
-		<script>
-			function myFunction() {
-			    var x = document.getElementById("frm1");
-			    var text = "";
-			    var i;
-			    for (i = 0; i < x.length ;i++) {
-			        text += x.elements[i].value + "<br>";
-			    }
-			    document.getElementById("frm1").innerHTML = text;
-			}
-</script>
-
-
 
 
 		<footer>
@@ -102,6 +90,30 @@
 
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 		<script src="bootstrap/js/bootstrap.js"></script>
-
+		<script>
+		function myFunction(){
+			var pseudo = document.getElementById('pseudo'),
+			radios = document.getElementsByName('radi'),
+			text = "";
+			
+			for (var i = 0, length = radios.length; i < length; i++) {
+			    if (radios[i].checked) {
+			        // do whatever you want with the checked radio
+			        text += radios[i].value;
+			        // only one radio can be logically checked, don't check the rest
+			        
+			    }
+			    
+			}
+			if (text != "" && pseudo.value!=""){
+				document.formu.submit();
+			}
+			else{
+				alert("Merci de remplir correctement les champs du formulaire")
+			}
+		}
+		
+		</script>
+		<!--- <script src="formu.js"></script> -->
 	</body>
 </html>
