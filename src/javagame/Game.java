@@ -36,7 +36,7 @@ public class Game extends StateBasedGame {
     public Game(String gamename) {
         super(gamename);
         this.addState(new Menu(MENU));
-        this.addState(new Play(PLAY));
+        this.addState(new PlayCoins(PLAY));
         this.addState(new Instr(INSTR));
         this.addState(new Config(CONFIG));
         this.addState(new LevelSelect(LEVELSELECT));
