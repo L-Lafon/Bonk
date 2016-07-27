@@ -155,6 +155,18 @@ public class PlayCoins extends BasicGameState {
         }
     }
     
+    class Finish {
+        Vec2D pos;
+        Image image;
+        boolean isMoving;
+        
+        public Finish() throws SlickException {
+            this.image = new Image("res/sprites/finish.png");
+            this.pos = new Vec2D(660,120);
+            this.isMoving = false;
+        }
+    }
+    
     class Coin {
         Vec2D pos;
         Image[] images;
@@ -182,7 +194,7 @@ public class PlayCoins extends BasicGameState {
         int coinFrame;
         float coinGroupTime, coinGroupWait;
         int coinCount, coinMax;
-        boolean coinPause;
+        boolean coinPause, levelOver;
         String[] letters;
         int ltrIndex;
         
@@ -199,6 +211,7 @@ public class PlayCoins extends BasicGameState {
             this.coinCount = 0;
             this.coinMax = 5;
             this.ltrIndex = 0;
+            this.levelOver = false;
         }
     }
     
@@ -267,6 +280,8 @@ public class PlayCoins extends BasicGameState {
     Player player;
         
     Wall wall; // Make JAVA programming great again !
+    
+    Finish finish;
     
     CoinManager coins;
         
@@ -410,6 +425,7 @@ public class PlayCoins extends BasicGameState {
         
         winSize = new Vec2D(gc.getWidth(), gc.getHeight());
         wall = new Wall();
+        finish = new Finish();
         
         // initialisation police de caractère
         Font awtFont = new Font("Lucida Sans", Font.BOLD, 24) {};
@@ -483,6 +499,8 @@ public class PlayCoins extends BasicGameState {
             wall.image.draw(wall.pos.x, wall.pos.y);
         }
         
+        finish.image.draw(finish.pos.x,finish.pos.y);
+        
         
         if (player.fury==false) {
             if (player.furyLoad) {
@@ -526,6 +544,9 @@ public class PlayCoins extends BasicGameState {
             imgMalus.draw(player.pos.x + 150,player.pos.y + 25);
         }
         g.drawString(Integer.toString(Game.LEVEL)+" - "+Integer.toString(Game.SUBLEVEL), 0, 30);
+        if (finish.pos.x < -64) {
+            g.drawString("You win", 200,200);
+        }
     }
     
     /**
@@ -614,6 +635,13 @@ public class PlayCoins extends BasicGameState {
             wall.broken = -1;
         }
         
+        if (finish.isMoving) {
+            finish.pos.x -= delta*SPEED;
+        }
+        if (finish.pos.x < -64) {
+            finish.isMoving = false;
+        }
+        
         /*
         Input Up-Down
         */
@@ -667,12 +695,14 @@ public class PlayCoins extends BasicGameState {
             coins.coinPause = !coins.coinPause;
             coins.ltrIndex += 1;
             if (coins.ltrIndex == coins.letters.length-1) {
-                sbg.enterState(Game.PAUSE);
+                //sbg.enterState(Game.PAUSE);
+                coins.levelOver = true;
+                finish.isMoving = true;
             }
             //coins.ltrIndex = (coins.ltrIndex + 1) % coins.letters.length;
             coins.coinGroupTime = 0;
         }
-        if (!coins.coinPause && coins.coinTime > coins.coinWait) {
+        if (!coins.levelOver && !coins.coinPause && coins.coinTime > coins.coinWait) {
             if (coins.letters[coins.ltrIndex].charAt(0) != 'X') {
                 createCoin(coins.letters[coins.ltrIndex]);
                 coins.coinTime = 0;
