@@ -62,7 +62,7 @@ public class PlayCoins extends BasicGameState {
         int score;
         int furySpr; // étape d'animation fury
         float furyAnimTime;
-        boolean malus;
+        boolean malus, bonus;
         float malusTime, malusWait;
         
         /**
@@ -103,6 +103,7 @@ public class PlayCoins extends BasicGameState {
             this.malus = false;
             this.malusTime = 0;
             this.malusWait = 500;
+            this.bonus = false;
         }
     }
     
@@ -299,6 +300,7 @@ public class PlayCoins extends BasicGameState {
     boolean isMusic, isSFX;
     
     Image imgMalus;
+    Image imgBonus;
     
     /**
      * Creates the play screen
@@ -341,6 +343,7 @@ public class PlayCoins extends BasicGameState {
             else {
                 sndWall.play();
                 System.out.println("WALL DESTROYING");
+                player.bonus = true;
                 wall.broken = player.row;
                 //wall.pos.x = -500;
             } 
@@ -456,6 +459,7 @@ public class PlayCoins extends BasicGameState {
         }
         
         imgMalus = new Image("res/sprites/malus.png");
+        imgBonus = new Image("res/sprites/bonus.png");
         
         //music = Game.OST[3];
         music = Game.OST[(int) (Math.random()*Game.OST.length)];
@@ -542,6 +546,9 @@ public class PlayCoins extends BasicGameState {
         
         if (player.malus) {
             imgMalus.draw(player.pos.x + 150,player.pos.y + 25);
+        }
+        if (player.bonus) {
+            imgBonus.draw(player.pos.x + 150,player.pos.y + 25);
         }
         g.drawString(Integer.toString(Game.LEVEL)+" - "+Integer.toString(Game.SUBLEVEL), 0, 30);
         if (finish.pos.x < -64) {
@@ -654,6 +661,13 @@ public class PlayCoins extends BasicGameState {
             player.malusTime += delta;
             if (player.malusTime > player.malusWait) {
                 player.malus = false;
+                player.malusTime = 0;
+            }
+        }
+        if (player.bonus){
+            player.malusTime += delta;
+            if (player.malusTime > player.malusWait) {
+                player.bonus = false;
                 player.malusTime = 0;
             }
         }
