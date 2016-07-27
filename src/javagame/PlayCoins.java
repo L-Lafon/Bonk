@@ -107,12 +107,25 @@ public class PlayCoins extends BasicGameState {
     }
     
     class Bg {
-        Image image;
+        Image[] image;
+        int index;
+        float alpha;
         Vec2D pos;
         
-        public Bg(Image image) {
-            this.image = image;
+        public Bg() throws SlickException {
+            this.image = new Image[] {
+                new Image("res/backgrounds/bg-E.png"),
+                new Image("res/backgrounds/bg-W.png"),
+                new Image("res/backgrounds/bg-Y.png"),
+                new Image("res/backgrounds/bg-J.png"),
+                new Image("res/backgrounds/bg-A.png"),
+                new Image("res/backgrounds/bg-B.png"),
+                new Image("res/backgrounds/bg-M.png"),
+                new Image("res/backgrounds/bg-Q.png"),
+            };
             this.pos = new Vec2D(0,120);
+            this.index = (int) (Math.random()*this.image.length);
+            this.alpha = 1f;
         }
     }
     
@@ -393,7 +406,7 @@ public class PlayCoins extends BasicGameState {
      */
         stats = new Stats();
         
-        bg = new Bg(new Image("res/backgrounds/bg-G.png"));
+        bg = new Bg();
         
         winSize = new Vec2D(gc.getWidth(), gc.getHeight());
         wall = new Wall();
@@ -453,8 +466,10 @@ public class PlayCoins extends BasicGameState {
             block.get(block.count + 1).image.draw(winSize.x + block.pos.x,block.pos.y);
         }
         */
-        bg.image.draw(bg.pos.x,bg.pos.y);
-        bg.image.draw(bg.pos.x+640, bg.pos.y);
+        bg.image[(bg.index+1)%bg.image.length].draw(bg.pos.x,bg.pos.y);
+        bg.image[(bg.index+1)%bg.image.length].draw(bg.pos.x+640, bg.pos.y);
+        bg.image[bg.index].draw(bg.pos.x,bg.pos.y,new Color(1f,1f,1f,bg.alpha));
+        bg.image[bg.index].draw(bg.pos.x+640, bg.pos.y,new Color(1f,1f,1f,bg.alpha));
         /*
         else {
             block.get(0).image.draw(winSize.x + block.pos.x,block.pos.y);
@@ -526,6 +541,11 @@ public class PlayCoins extends BasicGameState {
             music.setVolume(0.5F);
         }
         bg.pos.x -= delta * SPEED;
+        bg.alpha -= delta * 0.0001;
+        if (bg.alpha < 0) {
+            bg.alpha = 1f;
+            bg.index = (bg.index+1)%bg.image.length;
+        }
         Input input = gc.getInput();
         
         
@@ -547,6 +567,7 @@ public class PlayCoins extends BasicGameState {
         */
         if (bg.pos.x < -winSize.x) {
             bg.pos.x = 0;
+            
             /*
             block.count += 1;
             stats.write(block.count,block.get(block.count).wall);
