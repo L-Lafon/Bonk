@@ -122,6 +122,7 @@ public class PlayCoins extends BasicGameState {
         Image[] imgBroken;
         float speed;
         int broken;
+        boolean isMoving;
         
         /**
          * Creates a wall with an image, a Vec2D (position) and a speed
@@ -137,6 +138,7 @@ public class PlayCoins extends BasicGameState {
             this.pos = new Vec2D(640,120);
             this.speed = SPEED;
             this.broken = -1;
+            this.isMoving = false;
         }
     }
     
@@ -582,6 +584,14 @@ public class PlayCoins extends BasicGameState {
             
         } 
         */
+        if (wall.isMoving) {
+            wall.pos.x -= delta * SPEED;
+        }
+        if (wall.pos.x < -64) {
+            wall.pos.x = 640;
+            wall.isMoving = false;
+            wall.broken = -1;
+        }
         
         /*
         Input Up-Down
@@ -634,13 +644,20 @@ public class PlayCoins extends BasicGameState {
         coins.coinGroupTime += delta;
         if (coins.coinGroupTime > coins.coinGroupWait) {
             coins.coinPause = !coins.coinPause;
-            coins.ltrIndex = (coins.ltrIndex + 1) % coins.letters.length;
+            coins.ltrIndex += 1;
+            if (coins.ltrIndex == coins.letters.length-1) {
+                sbg.enterState(Game.PAUSE);
+            }
+            //coins.ltrIndex = (coins.ltrIndex + 1) % coins.letters.length;
             coins.coinGroupTime = 0;
         }
         if (!coins.coinPause && coins.coinTime > coins.coinWait) {
             if (coins.letters[coins.ltrIndex].charAt(0) != 'X') {
                 createCoin(coins.letters[coins.ltrIndex]);
                 coins.coinTime = 0;
+            }
+            else {
+                wall.isMoving = true;
             }
         }
         for (Coin coin : coins.activeCoins) {
