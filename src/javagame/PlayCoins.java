@@ -545,7 +545,10 @@ public class PlayCoins extends BasicGameState {
         }
         g.drawString(Integer.toString(Game.LEVEL)+" - "+Integer.toString(Game.SUBLEVEL), 0, 30);
         if (finish.pos.x < -64) {
-            g.drawString("You win", 200,200);
+            g.setColor(Color.black);
+            g.drawString("Congratulations !", 198,198);
+            g.setColor(Color.yellow);
+            g.drawString("Congratulations !", 200,200);
         }
     }
     
@@ -569,7 +572,6 @@ public class PlayCoins extends BasicGameState {
         }
         Input input = gc.getInput();
         
-        
         if (input.isKeyPressed(Input.KEY_A)) {
             gc.setFullscreen(true);
         }
@@ -588,43 +590,10 @@ public class PlayCoins extends BasicGameState {
         */
         if (bg.pos.x < -winSize.x) {
             bg.pos.x = 0;
-            
-            /*
-            block.count += 1;
-            stats.write(block.count,block.get(block.count).wall);
-            stats.reset();
-            if (block.count == block.size()-1) {
-                //music.stop();
-                if (Game.SUBLEVEL != 2) {
-                    sbg.getState(Game.PAUSE).init(gc, sbg);
-                    sbg.enterState(Game.PAUSE);
-                }
-                else {
-                    sbg.enterState(Game.MENU);
-                }
-            }
-            */
-            
         }
         
         /*
         Display the wall
-        */
-        /*
-        if (block.get((block.count + 1) % block.size()).wall) { // apparition du mur
-            wall.pos.x = winSize.x + block.pos.x;
-            stats.timer += delta;
-        }
-        else {
-            if (wall.pos.x > -64 && wall.pos.x < 640) {
-                wall.pos.x -= delta * wall.speed;
-            }
-            else {
-                wall.pos.x = 640;
-                wall.broken = -1;
-            }
-            
-        } 
         */
         if (wall.isMoving) {
             wall.pos.x -= delta * SPEED;
@@ -635,6 +604,9 @@ public class PlayCoins extends BasicGameState {
             wall.broken = -1;
         }
         
+        /*
+        Display the finish line
+        */
         if (finish.isMoving) {
             finish.pos.x -= delta*SPEED;
         }
@@ -761,9 +733,6 @@ public class PlayCoins extends BasicGameState {
             player.fury = false;
             player.furyTime = 0;
         }
-        
-        
-        
     }
     
     public int getID() {
