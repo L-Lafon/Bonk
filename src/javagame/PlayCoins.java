@@ -310,6 +310,31 @@ public class PlayCoins extends BasicGameState {
         
     }
     
+    public void reset() throws SlickException {
+        stats = new Stats();
+        
+        
+        
+        wall = new Wall();
+        finish = new Finish();
+        
+        String[] letters;
+        
+        try {
+            String[] names;
+            Wini lvlIni = new Wini(new File("levels.ini"));
+            names = lvlIni.get(Integer.toString(Game.LEVEL), "order", String.class).split(",");
+            letters = lvlIni.get(Integer.toString(Game.LEVEL), names[Game.SUBLEVEL], String.class).split("");
+        } catch (IOException ex) {
+            letters = "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE".split("");
+            Logger.getLogger(PlayCoins.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        coins = new CoinManager(letters);
+        
+        
+    }
+    
     /**
      * Destroys the wall when outside the game window or when the player breaks it
      */
@@ -407,6 +432,22 @@ public class PlayCoins extends BasicGameState {
         coins.activeCoins.removeAll(inactiveCoins);
     }
     
+    public void drawString(Graphics g, String string, int xpos, int ypos, TrueTypeFont font, Color mainColor, Color outlineColor, int border) {
+        g.setFont(font);
+        g.setColor(outlineColor);
+        g.drawString(string, xpos-border, ypos-border);
+        g.drawString(string, xpos-border, ypos);
+        g.drawString(string, xpos-border, ypos+border);
+        g.drawString(string, xpos, ypos-border);
+        g.drawString(string, xpos, ypos+border);
+        g.drawString(string, xpos+border, ypos-border);
+        g.drawString(string, xpos+border, ypos);
+        g.drawString(string, xpos+border, ypos+border);
+        
+        g.setColor(mainColor);
+        g.drawString(string, xpos, ypos);
+    }
+    
     /**
      * Initialize the variables
      * @param gc  the game container
@@ -422,33 +463,15 @@ public class PlayCoins extends BasicGameState {
      * @throws SlickException
      * @throws IOException
      */
-        stats = new Stats();
-        
+        reset();
         bg = new Bg();
-        
+        player = new Player();
         winSize = new Vec2D(gc.getWidth(), gc.getHeight());
-        wall = new Wall();
-        finish = new Finish();
         
         // initialisation police de caractère
         Font awtFont = new Font("Lucida Sans", Font.BOLD, 24) {};
         font = new TrueTypeFont(awtFont, false);
-        
-        String[] letters;
-        
-        try {
-            String[] names;
-            Wini lvlIni = new Wini(new File("levels.ini"));
-            names = lvlIni.get(Integer.toString(Game.LEVEL), "order", String.class).split(",");
-            letters = lvlIni.get(Integer.toString(Game.LEVEL), names[Game.SUBLEVEL], String.class).split("");
-        } catch (IOException ex) {
-            letters = "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE".split("");
-            Logger.getLogger(PlayCoins.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        coins = new CoinManager(letters);
-        
-        player = new Player();
+
         
         try {
             Wini ini = new Wini(new File("settings.ini"));
@@ -552,10 +575,40 @@ public class PlayCoins extends BasicGameState {
         }
         g.drawString(Integer.toString(Game.LEVEL)+" - "+Integer.toString(Game.SUBLEVEL), 0, 30);
         if (finish.pos.x < -64) {
+            /*
             g.setColor(Color.black);
             g.drawString("Congratulations !", 198,198);
+            g.drawString("Congratulations !", 198,202);
+            g.drawString("Congratulations !", 202,202);
+            g.drawString("Congratulations !", 202,198);
             g.setColor(Color.yellow);
             g.drawString("Congratulations !", 200,200);
+            
+            g.setColor(Color.black);
+            g.drawString("Press SPACE when you're ready for", 198,298);
+            g.drawString("Press SPACE when you're ready for", 198,302);
+            g.drawString("Press SPACE when you're ready for", 202,298);
+            g.drawString("Press SPACE when you're ready for", 202,302);
+            g.setColor(Color.yellow);
+            g.drawString("Press SPACE when you're ready for", 200,300);
+            
+            g.setColor(Color.black);
+            g.drawString("the next level", 198,348);
+            g.drawString("the next level", 198,352);
+            g.drawString("the next level", 202,348);
+            g.drawString("the next level", 202,352);
+            g.setColor(Color.yellow);
+            g.drawString("the next level", 200,350);
+            */
+            drawString(g, "Congratulations !", 200, 200, font, Color.yellow, Color.black, 2);
+            if (Game.SUBLEVEL == 2) {
+                drawString(g, "Press SPACE to go back to", 200, 300, font, Color.yellow, Color.black, 2);
+                drawString(g, "the main menu.", 200, 350, font, Color.yellow, Color.black, 2);
+            }
+            else {
+                drawString(g, "Press SPACE when you're ready for", 200, 300, font, Color.yellow, Color.black, 2);
+                drawString(g, "the next level.", 200, 350, font, Color.yellow, Color.black, 2);
+            }
         }
     }
     
@@ -679,7 +732,9 @@ public class PlayCoins extends BasicGameState {
         coins.coinGroupTime += delta;
         if (coins.coinGroupTime > coins.coinGroupWait) {
             coins.coinPause = !coins.coinPause;
-            coins.ltrIndex += 1;
+            if (!coins.coinPause) {
+                coins.ltrIndex += 1;
+            }
             if (coins.ltrIndex == coins.letters.length-1) {
                 //sbg.enterState(Game.PAUSE);
                 coins.levelOver = true;
@@ -710,11 +765,23 @@ public class PlayCoins extends BasicGameState {
         /*
         Load Fury
         */
-        if (input.isKeyPressed(Input.KEY_SPACE) && player.fury == false) {
-            sndLoad.play();
-            player.furyLoad = true;
-            stats.hasPressed = true;
-            stats.tpsReac = stats.timer;
+        if (input.isKeyPressed(Input.KEY_SPACE) && !player.fury && !player.furyLoad) {
+            if (finish.pos.x < -64) {
+                if (Game.SUBLEVEL < 2) {
+                    Game.SUBLEVEL += 1;
+                    reset();
+                }
+                else {
+                    sbg.enterState(Game.MENU);
+                }
+            }
+            else {
+                sndLoad.play();
+                player.furyLoad = true;
+                stats.hasPressed = true;
+                stats.tpsReac = stats.timer;
+            }
+            
         }
         if (player.furyLoad) {
             player.furyLoadTime += delta;
