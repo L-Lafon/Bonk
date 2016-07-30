@@ -296,7 +296,7 @@ public class PlayCoins extends BasicGameState {
     FileWriter statfile;
     
     Music music;
-    Sound sndWall, sndCoin, sndFury, sndLoad, sndMalus;
+    Sound sndWall, sndCoin, sndFury, sndLoad, sndMalus, sndBonus;
     boolean isMusic, isSFX;
     
     Image imgMalus;
@@ -367,9 +367,11 @@ public class PlayCoins extends BasicGameState {
             }
             else {
                 sndWall.play();
+                sndBonus.play();
                 System.out.println("WALL DESTROYING");
                 player.bonus = true;
                 wall.broken = player.row;
+                player.score += 10;
                 //wall.pos.x = -500;
             } 
         }
@@ -435,14 +437,16 @@ public class PlayCoins extends BasicGameState {
     public void drawString(Graphics g, String string, int xpos, int ypos, TrueTypeFont font, Color mainColor, Color outlineColor, int border) {
         g.setFont(font);
         g.setColor(outlineColor);
-        g.drawString(string, xpos-border, ypos-border);
-        g.drawString(string, xpos-border, ypos);
-        g.drawString(string, xpos-border, ypos+border);
-        g.drawString(string, xpos, ypos-border);
-        g.drawString(string, xpos, ypos+border);
-        g.drawString(string, xpos+border, ypos-border);
-        g.drawString(string, xpos+border, ypos);
-        g.drawString(string, xpos+border, ypos+border);
+        for (int x = 1; x <= border; x++) {
+            g.drawString(string, xpos-x, ypos-x);
+            g.drawString(string, xpos-x, ypos);
+            g.drawString(string, xpos-x, ypos+x);
+            g.drawString(string, xpos, ypos-x);
+            g.drawString(string, xpos, ypos+x);
+            g.drawString(string, xpos+x, ypos-x);
+            g.drawString(string, xpos+x, ypos);
+            g.drawString(string, xpos+x, ypos+x);
+        }
         
         g.setColor(mainColor);
         g.drawString(string, xpos, ypos);
@@ -491,6 +495,7 @@ public class PlayCoins extends BasicGameState {
         sndFury = new Sound("res/sounds/fury.wav");
         sndWall = new Sound("res/sounds/wall.wav");
         sndMalus = new Sound("res/sounds/malus.wav");
+        sndBonus = new Sound("res/sounds/bonus.wav");
         
         
     }
