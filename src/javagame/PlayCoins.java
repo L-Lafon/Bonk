@@ -51,16 +51,15 @@ public class PlayCoins extends BasicGameState {
         boolean animate; 
         boolean fury;
         boolean furyLoad;
-        float furyWait;
-        float furyTime;
-        float furyLoadTime;
-        float furyLoadWait;
+        float furyWait, furyTime; //duree furie
+        float furyLoadTime, furyLoadWait; //duree chargement furie
         Image furyImage;
         Image[] furyAnimation;
         Image[] flames;
         int furyStep; // étape d'animation chargement
         int score;
         int furySpr; // étape d'animation fury
+        int furyState, furyStateMax;
         float furyAnimTime;
         boolean malus, bonus;
         float malusTime, malusWait;
@@ -81,8 +80,8 @@ public class PlayCoins extends BasicGameState {
             this.furyWait = 900F; // tps de la furie
             this.furyTime = 0F; // timer de la furie
             this.furyLoad = false;
-            this.furyLoadTime = 0; // timer de chargement de la furie
-            this.furyLoadWait = 500; // tps de chargement de la furie
+            this.furyLoadTime = 0F; // timer de chargement de la furie
+            this.furyLoadWait = 500F; // tps de chargement de la furie
             this.furyStep = 0;
             this.furyImage = new Image("res/sprites/idee_perso_fury.png");
             this.furyAnimation = new Image[] {
@@ -101,9 +100,11 @@ public class PlayCoins extends BasicGameState {
             this.score = 0;
             this.furyAnimTime = 0F;
             this.malus = false;
-            this.malusTime = 0;
-            this.malusWait = 500;
+            this.malusTime = 0F;
+            this.malusWait = 500F;
             this.bonus = false;
+            this.furyState = 0;
+            this.furyStateMax = 5;//combien de pieces pour la furie
         }
     }
     
@@ -276,6 +277,20 @@ public class PlayCoins extends BasicGameState {
         }
     }
     
+    class HUD {
+        Image front, back, coin;
+        int gaugePosX, gaugePosY, gaugeWidth, gaugeHeight;
+        public HUD() throws SlickException {
+            this.front = new Image("res/sprites/hudFront.png");
+            this.back = new Image("res/sprites/hudBack.png");
+            this.gaugePosX = 32;
+            this.gaugePosY = 32;
+            this.gaugeWidth = 320;
+            this.gaugeHeight = 64;
+            this.coin = new Image("res/sprites/coin2Y.png");
+        }
+    }
+    
     Vec2D winSize;
     
     Player player;
@@ -289,6 +304,8 @@ public class PlayCoins extends BasicGameState {
     TrueTypeFont font;
         
     Bg bg;
+    
+    HUD hud;
     
     //kou rouloukoukou rouloukoukou
     Stats stats; // #okjesors
@@ -362,7 +379,7 @@ public class PlayCoins extends BasicGameState {
             System.out.println("GAME OVER");
             player.malus = true;
             sndMalus.play();
-            player.score -= 10;
+            player.score = Math.max(0, player.score - 10);
             //sbg.enterState(0);
             }
             else {
@@ -424,6 +441,7 @@ public class PlayCoins extends BasicGameState {
                     //System.out.println("Grab coin");
                     player.score +=1;
                     stats.coins +=1 ;
+                    player.furyState = Math.min(player.furyStateMax, player.furyState + 1);
                     inactiveCoins.add(coin);
                     if (Game.ISSFX) {
                         sndCoin.play();
@@ -471,6 +489,7 @@ public class PlayCoins extends BasicGameState {
         bg = new Bg();
         player = new Player();
         winSize = new Vec2D(gc.getWidth(), gc.getHeight());
+        hud = new HUD();
         
         // initialisation police de caractère
         Font awtFont = new Font("Lucida Sans", Font.BOLD, 24) {};
@@ -508,21 +527,10 @@ public class PlayCoins extends BasicGameState {
      * @throws SlickException 
      */
     public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
-        /*
-        block.get(block.count).image.draw(block.pos.x,block.pos.y);
-        if (block.count < block.size() - 1) {
-            block.get(block.count + 1).image.draw(winSize.x + block.pos.x,block.pos.y);
-        }
-        */
         bg.image[(bg.index+1)%bg.image.length].draw(bg.pos.x,bg.pos.y);
         bg.image[(bg.index+1)%bg.image.length].draw(bg.pos.x+640, bg.pos.y);
         bg.image[bg.index].draw(bg.pos.x,bg.pos.y,new Color(1f,1f,1f,bg.alpha));
         bg.image[bg.index].draw(bg.pos.x+640, bg.pos.y,new Color(1f,1f,1f,bg.alpha));
-        /*
-        else {
-            block.get(0).image.draw(winSize.x + block.pos.x,block.pos.y);
-        }
-        */
         
         if (wall.broken != -1) {
             wall.imgBroken[wall.broken].draw(wall.pos.x, wall.pos.y);
@@ -536,18 +544,9 @@ public class PlayCoins extends BasicGameState {
         
         if (player.fury==false) {
             if (player.furyLoad) {
-                if (player.furyLoadTime < 125) {
-                    player.furyAnimation[0].draw(player.pos.x, player.pos.y);
-                }
-                else if (player.furyLoadTime < 250) {
-                    player.furyAnimation[1].draw(player.pos.x, player.pos.y);
-                }
-                else if (player.furyLoadTime < 375) {
-                    player.furyAnimation[2].draw(player.pos.x, player.pos.y);
-                }
-                else {
-                    player.furyAnimation[3].draw(player.pos.x, player.pos.y);
-                }
+                int index = Math.min((int) (player.furyLoadTime/(player.furyLoadWait/4)),3);
+                System.out.println(index);
+                player.furyAnimation[index].draw(player.pos.x, player.pos.y);
             }
             else {
                 player.image.draw(player.pos.x, player.pos.y);
@@ -558,19 +557,29 @@ public class PlayCoins extends BasicGameState {
             
             player.flames[player.furySpr].draw(player.pos.x - 85, player.pos.y - 50);
             player.furyImage.draw(player.pos.x, player.pos.y);
-        } 
-        
-        
+        }
         
         for (Coin coin:coins.activeCoins) {
             coin.images[coins.coinFrame].draw(coin.pos.x, coin.pos.y);
         }
         
-        new Image("res/test_hud.png").draw();
+        hud.back.draw();
+        if (player.furyState == player.furyStateMax) {
+            g.setColor(Color.green);
+        }
+        else {
+            g.setColor(Color.orange);
+        }
+
+        g.fillRect(hud.gaugePosX, hud.gaugePosY, (hud.gaugeWidth*player.furyState)/player.furyStateMax, hud.gaugeHeight);
+        
+        hud.front.draw();
+        
+        hud.coin.draw(384,40);
         
         g.setFont(font);
         g.setColor(Color.yellow);
-        g.drawString(Integer.toString(player.score),515,56);
+        g.drawString("x " + Integer.toString(player.score),450,48);
         
         if (player.malus) {
             imgMalus.draw(player.pos.x + 150,player.pos.y + 25);
@@ -578,33 +587,8 @@ public class PlayCoins extends BasicGameState {
         if (player.bonus) {
             imgBonus.draw(player.pos.x + 150,player.pos.y + 25);
         }
-        g.drawString(Integer.toString(Game.LEVEL)+" - "+Integer.toString(Game.SUBLEVEL), 0, 30);
+        
         if (finish.pos.x < -64) {
-            /*
-            g.setColor(Color.black);
-            g.drawString("Congratulations !", 198,198);
-            g.drawString("Congratulations !", 198,202);
-            g.drawString("Congratulations !", 202,202);
-            g.drawString("Congratulations !", 202,198);
-            g.setColor(Color.yellow);
-            g.drawString("Congratulations !", 200,200);
-            
-            g.setColor(Color.black);
-            g.drawString("Press SPACE when you're ready for", 198,298);
-            g.drawString("Press SPACE when you're ready for", 198,302);
-            g.drawString("Press SPACE when you're ready for", 202,298);
-            g.drawString("Press SPACE when you're ready for", 202,302);
-            g.setColor(Color.yellow);
-            g.drawString("Press SPACE when you're ready for", 200,300);
-            
-            g.setColor(Color.black);
-            g.drawString("the next level", 198,348);
-            g.drawString("the next level", 198,352);
-            g.drawString("the next level", 202,348);
-            g.drawString("the next level", 202,352);
-            g.setColor(Color.yellow);
-            g.drawString("the next level", 200,350);
-            */
             drawString(g, "Congratulations !", 200, 200, font, Color.yellow, Color.black, 2);
             if (Game.SUBLEVEL == 2) {
                 drawString(g, "Press SPACE to go back to", 200, 300, font, Color.yellow, Color.black, 2);
@@ -770,7 +754,7 @@ public class PlayCoins extends BasicGameState {
         /*
         Load Fury
         */
-        if (input.isKeyPressed(Input.KEY_SPACE) && !player.fury && !player.furyLoad) {
+        if (input.isKeyPressed(Input.KEY_SPACE)) {
             if (finish.pos.x < -64) {
                 if (Game.SUBLEVEL < 2) {
                     Game.SUBLEVEL += 1;
@@ -780,7 +764,7 @@ public class PlayCoins extends BasicGameState {
                     sbg.enterState(Game.MENU);
                 }
             }
-            else {
+            else if (!player.fury && !player.furyLoad && player.furyState == player.furyStateMax) {
                 sndLoad.play();
                 player.furyLoad = true;
                 stats.hasPressed = true;
@@ -802,6 +786,7 @@ public class PlayCoins extends BasicGameState {
             player.furyLoad = false;
             player.fury = true;
             player.furyLoadTime = 0;
+            player.furyState = 0;
         }
         if (player.fury) {
             player.furyTime += delta;

@@ -21,6 +21,7 @@ public class Game extends StateBasedGame {
     public static final int CONFIG = 3;
     public static final int LEVELSELECT = 4;
     public static final int PAUSE = 5;
+    public static final int CREDITS = 6;
     
     public static boolean ISFULLSCREEN, ISMUSIC, ISSFX;
     public static int LEVEL = 1;
@@ -41,6 +42,7 @@ public class Game extends StateBasedGame {
         this.addState(new Config(CONFIG));
         this.addState(new LevelSelect(LEVELSELECT));
         this.addState(new Pause(PAUSE));
+        this.addState(new Credits(CREDITS));
     }
     
     
@@ -59,6 +61,7 @@ public class Game extends StateBasedGame {
         this.getState(CONFIG).init(gc, this);
         this.getState(LEVELSELECT).init(gc, this);
         this.getState(PAUSE).init(gc, this);
+        this.getState(CREDITS).init(gc, this);
         this.enterState(MENU);
     }
     

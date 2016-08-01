@@ -69,6 +69,24 @@ public class Config extends BasicGameState {
     Wini ini;
     TrueTypeFont font;
     
+    public void drawString(Graphics g, String string, int xpos, int ypos, TrueTypeFont font, Color mainColor, Color outlineColor, int border) {
+        g.setFont(font);
+        g.setColor(outlineColor);
+        for (int x = 1; x <= border; x++) {
+            g.drawString(string, xpos-x, ypos-x);
+            g.drawString(string, xpos-x, ypos);
+            g.drawString(string, xpos-x, ypos+x);
+            g.drawString(string, xpos, ypos-x);
+            g.drawString(string, xpos, ypos+x);
+            g.drawString(string, xpos+x, ypos-x);
+            g.drawString(string, xpos+x, ypos);
+            g.drawString(string, xpos+x, ypos+x);
+        }
+        
+        g.setColor(mainColor);
+        g.drawString(string, xpos, ypos);
+    }
+    
     /**
      * Initialise the backgroung and buttons used
      * @param gc
@@ -116,6 +134,10 @@ public class Config extends BasicGameState {
             g.drawImage(buttonBack.image, buttonBack.x1, buttonBack.y1);
         }
         
+        this.drawString(g, "Fullscreen", 50, 150, font, Color.yellow, Color.black, 2);
+        this.drawString(g, "Music", 50, 250, font, Color.yellow, Color.black, 2);
+        this.drawString(g, "Sound effects", 50, 350, font, Color.yellow, Color.black, 2);
+        /*
         g.setFont(font);
         g.setColor(Color.black);
         g.drawString("Fullscreen", 53, 153);
@@ -125,6 +147,7 @@ public class Config extends BasicGameState {
         g.drawString("Fullscreen", 50, 150);
         g.drawString("Music", 50, 250);
         g.drawString("Sound effects", 50, 350);
+        */
         
         
         Button[] buts = new Button[] {buttonFS, buttonMusic, buttonSFX};

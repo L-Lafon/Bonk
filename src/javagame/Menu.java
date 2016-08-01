@@ -46,7 +46,7 @@ public class Menu extends BasicGameState {
     }
     
     Image bgMenu;
-    Button buttonPlay, buttonInstr, buttonSettings, buttonExit;
+    Button buttonPlay, buttonInstr, buttonSettings, buttonExit, buttonInfo;
     
     /**
      * 
@@ -70,6 +70,7 @@ public class Menu extends BasicGameState {
         buttonInstr = new Button(new Image("res/buttons/Instructions.png"), new Image("res/buttons/InstructionsActive.png"),128,320);
         buttonSettings = new Button(new Image("res/buttons/Settings.png"), new Image("res/buttons/SettingsActive.png"),128,384);
         buttonExit = new Button(new Image("res/buttons/Quit.png"), new Image("res/buttons/QuitActive.png"), 10, 10);
+        buttonInfo = new Button(new Image("res/buttons/Info.png"), new Image("res/buttons/InfoActive.png"), 566, 10);
     }
     
     /**
@@ -84,7 +85,7 @@ public class Menu extends BasicGameState {
         g.drawImage(bgMenu, 0, 0);
         
         Button[] buts = new Button[] {
-            buttonPlay, buttonInstr, buttonSettings, buttonExit
+            buttonPlay, buttonInstr, buttonSettings, buttonExit, buttonInfo
         };
         
         for (Button but:buts) {
@@ -149,6 +150,16 @@ public class Menu extends BasicGameState {
         }
         else {
             buttonExit.active = false;
+        }
+        
+        if (buttonInfo.hover(xpos, ypos)) {
+            buttonInfo.active = true;
+            if (input.isMousePressed(0)) {
+                sbg.enterState(Game.CREDITS);
+            }
+        }
+        else {
+            buttonInfo.active = false;
         }
         //System.out.println("Mouse : "+xpos+" , "+ypos);
         
