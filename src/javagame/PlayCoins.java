@@ -155,6 +155,10 @@ public class PlayCoins extends BasicGameState {
             this.broken = -1;
             this.isMoving = false;
         }
+        
+        public boolean isOnScreen() {
+            return (this.pos.x < 640 && this.pos.x > -64);
+        }
     }
     
     class Finish {
@@ -229,7 +233,7 @@ public class PlayCoins extends BasicGameState {
         float tpsReac;
         int coins;
         float timer;
-        boolean hasPressed;
+        boolean hasPressed, hasBrokenWall;
         
         /**
          * Creates some stats about the player's performance
@@ -254,23 +258,23 @@ public class PlayCoins extends BasicGameState {
             this.coins = 0;
             this.timer = 0;
             this.hasPressed = false;
+            this.hasBrokenWall = false;
         }
         
         /**
          * Writes the stats to a .csv file
          * @param count index of the background
          */
-        public void write(int count, boolean wall) {
-            String[] conds = new String[] {"RAN", "NPE", "PE"};
+        public void write(String letter) {
             try {
                 Writer file = new BufferedWriter(new FileWriter("data.csv", true));
                 file.append(Integer.toString(Game.LEVEL)+","
-                            +conds[Game.SUBLEVEL]+","
-                            +Integer.toString(count)+","
-                            +Boolean.toString(wall)+","
+                            +names[Game.SUBLEVEL]+","
+                            +letter+","
                             +Boolean.toString(this.hasPressed)+","
+                            +Boolean.toString(this.hasBrokenWall)+","
                             +Integer.toString(this.coins)+","
-                            +Float.toString(stats.tpsReac)+"\n");
+                            +Float.toString(this.tpsReac)+"\n");
                 file.close();
             } catch (IOException iOException) {
             }
@@ -307,6 +311,8 @@ public class PlayCoins extends BasicGameState {
     
     HUD hud;
     
+    String[] names, letters;
+    
     //kou rouloukoukou rouloukoukou
     Stats stats; // #okjesors
     
@@ -334,11 +340,8 @@ public class PlayCoins extends BasicGameState {
         
         wall = new Wall();
         finish = new Finish();
-        
-        String[] letters;
-        
+                
         try {
-            String[] names;
             Wini lvlIni = new Wini(new File("levels.ini"));
             names = lvlIni.get(Integer.toString(Game.LEVEL), "order", String.class).split(",");
             letters = lvlIni.get(Integer.toString(Game.LEVEL), names[Game.SUBLEVEL], String.class).split("");
@@ -376,7 +379,6 @@ public class PlayCoins extends BasicGameState {
         
         if(!player.malus && wall.broken == -1 && playerPoly.intersects(wallPoly)) {
             if (player.fury==false) {
-            System.out.println("GAME OVER");
             player.malus = true;
             sndMalus.play();
             player.score = Math.max(0, player.score - 10);
@@ -385,10 +387,10 @@ public class PlayCoins extends BasicGameState {
             else {
                 sndWall.play();
                 sndBonus.play();
-                System.out.println("WALL DESTROYING");
                 player.bonus = true;
                 wall.broken = player.row;
                 player.score += 10;
+                stats.hasBrokenWall = true;
                 //wall.pos.x = -500;
             } 
         }
@@ -400,7 +402,6 @@ public class PlayCoins extends BasicGameState {
      */
     public void createCoin(String letter) throws SlickException {
         coins.coinStage = (int)(Math.random() * 3);
-        //System.out.println("creating coin");
         Coin coin = new Coin(letter);
         coin.pos.x = 640;
         coin.pos.y = 120*(coins.coinStage+1)+35;
@@ -438,7 +439,6 @@ public class PlayCoins extends BasicGameState {
                 );
 
                 if(playerPoly.intersects(coinPoly)) {
-                    //System.out.println("Grab coin");
                     player.score +=1;
                     stats.coins +=1 ;
                     player.furyState = Math.min(player.furyStateMax, player.furyState + 1);
@@ -515,8 +515,6 @@ public class PlayCoins extends BasicGameState {
         sndWall = new Sound("res/sounds/wall.wav");
         sndMalus = new Sound("res/sounds/malus.wav");
         sndBonus = new Sound("res/sounds/bonus.wav");
-        
-        
     }
     
     /**
@@ -545,7 +543,6 @@ public class PlayCoins extends BasicGameState {
         if (player.fury==false) {
             if (player.furyLoad) {
                 int index = Math.min((int) (player.furyLoadTime/(player.furyLoadWait/4)),3);
-                System.out.println(index);
                 player.furyAnimation[index].draw(player.pos.x, player.pos.y);
             }
             else {
@@ -646,6 +643,7 @@ public class PlayCoins extends BasicGameState {
         */
         if (wall.isMoving) {
             wall.pos.x -= delta * SPEED;
+            stats.timer += delta;
         }
         if (wall.pos.x < -64) {
             wall.pos.x = 640;
@@ -722,13 +720,17 @@ public class PlayCoins extends BasicGameState {
         if (coins.coinGroupTime > coins.coinGroupWait) {
             coins.coinPause = !coins.coinPause;
             if (!coins.coinPause) {
+                System.out.println(coins.letters[coins.ltrIndex]);
+                stats.write(coins.letters[coins.ltrIndex]);
+                stats.reset();
                 coins.ltrIndex += 1;
+                if (coins.ltrIndex == coins.letters.length-1) {
+                    //sbg.enterState(Game.PAUSE);
+                    coins.levelOver = true;
+                    finish.isMoving = true;
+                }
             }
-            if (coins.ltrIndex == coins.letters.length-1) {
-                //sbg.enterState(Game.PAUSE);
-                coins.levelOver = true;
-                finish.isMoving = true;
-            }
+            
             //coins.ltrIndex = (coins.ltrIndex + 1) % coins.letters.length;
             coins.coinGroupTime = 0;
         }

@@ -88,7 +88,7 @@ public class Game extends StateBasedGame {
         
         try {
             Writer file = new FileWriter("data.csv");
-            file.write("block,condition,background,wall,pressed,coins,reaction-time\n");
+            file.write("block,condition,letter,pressed,broken wall,coins,reaction time\n");
             file.close();
         } catch (IOException iOException) {
         }
