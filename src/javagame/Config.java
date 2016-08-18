@@ -107,9 +107,9 @@ public class Config extends BasicGameState {
         
         try {
             ini = new Wini(new File("settings.ini"));
-            buttonFS.active = ini.get("Display", "fullscreen", boolean.class);
-            buttonMusic.active = ini.get("Sound", "music", boolean.class);
-            buttonSFX.active = ini.get("Sound", "sfx", boolean.class);
+            buttonFS.active = Boolean.valueOf(ini.get("Display", "fullscreen"));
+            buttonMusic.active = Boolean.valueOf(ini.get("Sound", "music"));
+            buttonSFX.active = Boolean.valueOf(ini.get("Sound", "sfx"));
         } catch (IOException ex) {
             Logger.getLogger(Config.class.getName()).log(Level.SEVERE, null, ex);
         }

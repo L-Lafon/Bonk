@@ -343,8 +343,8 @@ public class PlayCoins extends BasicGameState {
                 
         try {
             Wini lvlIni = new Wini(new File("levels.ini"));
-            names = lvlIni.get(Integer.toString(Game.LEVEL), "order", String.class).split(",");
-            letters = lvlIni.get(Integer.toString(Game.LEVEL), names[Game.SUBLEVEL], String.class).split("");
+            names = lvlIni.get(Integer.toString(Game.LEVEL), "order").split(",");
+            letters = lvlIni.get(Integer.toString(Game.LEVEL), names[Game.SUBLEVEL]).split("");
         } catch (IOException ex) {
             letters = "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE".split("");
             Logger.getLogger(PlayCoins.class.getName()).log(Level.SEVERE, null, ex);
@@ -498,8 +498,8 @@ public class PlayCoins extends BasicGameState {
         
         try {
             Wini ini = new Wini(new File("settings.ini"));
-            isMusic = ini.get("Sound", "music", boolean.class);
-            isSFX = ini.get("Sound", "sfx", boolean.class);
+            isMusic = Boolean.valueOf(ini.get("Sound", "music"));
+            isSFX = Boolean.valueOf(ini.get("Sound", "sfx"));
         } catch (IOException ex) {
             Logger.getLogger(Config.class.getName()).log(Level.SEVERE, null, ex);
         }

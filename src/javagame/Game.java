@@ -73,9 +73,9 @@ public class Game extends StateBasedGame {
     public static void main(String[] args) throws IOException, SlickException {
         AppGameContainer appgc;
         Wini ini = new Wini(new File("settings.ini"));
-        ISFULLSCREEN = ini.get("Display", "fullscreen", boolean.class);
-        ISMUSIC = ini.get("Sound", "music", boolean.class);
-        ISSFX = ini.get("Sound", "sfx", boolean.class);
+        ISFULLSCREEN = Boolean.valueOf(ini.get("Display", "fullscreen"));
+        ISMUSIC = Boolean.valueOf(ini.get("Sound", "music"));
+        ISSFX = Boolean.valueOf(ini.get("Sound", "sfx"));
         
         OST = new Music[] {
             new Music("res/music/thefatrat-unity.ogg"),
