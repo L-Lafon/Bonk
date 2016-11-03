@@ -26,6 +26,9 @@ import org.newdawn.slick.state.*;
 public class PlayCoins extends BasicGameState {
     
     public static final float SPEED = 0.5F;
+    public int PAUSECOUNT = 0;
+    public int PAUSEMAX = 2000;
+    public boolean PAUSED = false;
     
     class Vec2D {
         /**
@@ -116,14 +119,15 @@ public class PlayCoins extends BasicGameState {
         
         public Bg() throws SlickException {
             this.image = new Image[] {
-                new Image("res/backgrounds/bg-E.png"),
+                /*new Image("res/backgrounds/bg-E.png"),
                 new Image("res/backgrounds/bg-W.png"),
                 new Image("res/backgrounds/bg-Y.png"),
                 new Image("res/backgrounds/bg-J.png"),
                 new Image("res/backgrounds/bg-A.png"),
                 new Image("res/backgrounds/bg-B.png"),
                 new Image("res/backgrounds/bg-M.png"),
-                new Image("res/backgrounds/bg-Q.png"),
+                new Image("res/backgrounds/bg-Q.png"),*/
+                new Image("res/backgrounds/bg-G.png")
             };
             this.pos = new Vec2D(0,120);
             this.index = (int) (Math.random()*this.image.length);
@@ -358,7 +362,7 @@ public class PlayCoins extends BasicGameState {
     /**
      * Destroys the wall when outside the game window or when the player breaks it
      */
-    public void destroyWall() {
+    public boolean destroyWall() {
         
         Polygon playerPoly = new Polygon(
             new float[] {
@@ -382,6 +386,7 @@ public class PlayCoins extends BasicGameState {
             player.malus = true;
             sndMalus.play();
             player.score = Math.max(0, player.score - 10);
+            return true;
             //sbg.enterState(0);
             }
             else {
@@ -394,6 +399,7 @@ public class PlayCoins extends BasicGameState {
                 //wall.pos.x = -500;
             } 
         }
+        return false;
     }
     
     /**
@@ -606,206 +612,218 @@ public class PlayCoins extends BasicGameState {
      * @throws SlickException 
      */
     public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
-        if (!music.playing() && Game.ISMUSIC) {
-            music.loop();
-            music.setVolume(0.5F);
-        }
-        bg.pos.x -= delta * SPEED;
-        bg.alpha -= delta * 0.0001;
-        if (bg.alpha < 0) {
-            bg.alpha = 1f;
-            bg.index = (bg.index+1)%bg.image.length;
-        }
-        Input input = gc.getInput();
         
-        if (input.isKeyPressed(Input.KEY_A)) {
-            gc.setFullscreen(true);
-        }
-        if (input.isKeyPressed(Input.KEY_Z)) {
-            gc.setFullscreen(false);
-        }
-        /*
-        if (input.isKeyPressed(Input.KEY_ESCAPE)) {
-            music.stop();
-            sbg.enterState(0);
-        }
-        */
-        
-        /*
-        Display next Bg
-        */
-        if (bg.pos.x < -winSize.x) {
-            bg.pos.x = 0;
-        }
-        
-        /*
-        Display the wall
-        */
-        if (wall.isMoving) {
-            wall.pos.x -= delta * SPEED;
-            stats.timer += delta;
-        }
-        if (wall.pos.x < -64) {
-            wall.pos.x = 640;
-            wall.isMoving = false;
-            wall.broken = -1;
-        }
-        
-        /*
-        Display the finish line
-        */
-        if (finish.isMoving) {
-            finish.pos.x -= delta*SPEED;
-        }
-        if (finish.pos.x < -64) {
-            finish.isMoving = false;
-        }
-        
-        /*
-        Input Up-Down
-        */
-        if (input.isKeyPressed(Input.KEY_UP) && player.row > 0) {
-            player.row -= 1;
-            player.animate = true;
-        }
-        if (input.isKeyPressed(Input.KEY_DOWN) && player.row < 2) {
-            player.row += 1;
-            player.animate=true;
-        }
-        
-        /*
-        Up-Down animation
-        */
-        if (player.animate == true) {
-            player.timer += delta;
-            if (player.pos.y < 120*(player.row+1)+10) {
-                player.pos.y += 120*delta/player.wait;
+        if (!PAUSED) {
+            if (!music.playing() && Game.ISMUSIC) {
+                music.loop();
+                music.setVolume(0.5F);
             }
-            if (player.pos.y > 120*(player.row+1)+10) {
-                player.pos.y -= 120*delta/player.wait;
+            bg.pos.x -= delta * SPEED;
+            bg.alpha -= delta * 0.0001;
+            if (bg.alpha < 0) {
+                bg.alpha = 1f;
+                bg.index = (bg.index+1)%bg.image.length;
             }
-        }
-        if (player.timer > player.wait) {
-            player.timer=0;
-            player.animate=false;
-            player.pos.y = 120*(player.row+1)+10;
-        }
-        
-        /*
-        Destroy the wall if on-screen
-        */
-        if (wall.pos.x<640 && wall.pos.x>-64) {
-            destroyWall();
-        }
-        if (player.malus) {
-            player.malusTime += delta;
-            if (player.malusTime > player.malusWait) {
-                player.malus = false;
-                player.malusTime = 0;
+            Input input = gc.getInput();
+
+            if (input.isKeyPressed(Input.KEY_A)) {
+                gc.setFullscreen(true);
             }
-        }
-        if (player.bonus){
-            player.malusTime += delta;
-            if (player.malusTime > player.malusWait) {
-                player.bonus = false;
-                player.malusTime = 0;
+            if (input.isKeyPressed(Input.KEY_Z)) {
+                gc.setFullscreen(false);
             }
-        }
-        
-        /*
-        Create, move, animate and destroy coins
-        */
-        coins.coinTime += delta;
-        coins.coinGroupTime += delta;
-        if (coins.coinGroupTime > coins.coinGroupWait) {
-            coins.coinPause = !coins.coinPause;
-            if (!coins.coinPause) {
-                System.out.println(coins.letters[coins.ltrIndex]);
-                stats.write(coins.letters[coins.ltrIndex]);
-                stats.reset();
-                coins.ltrIndex += 1;
-                if (coins.ltrIndex == coins.letters.length-1) {
-                    //sbg.enterState(Game.PAUSE);
-                    coins.levelOver = true;
-                    finish.isMoving = true;
+            /*
+            if (input.isKeyPressed(Input.KEY_ESCAPE)) {
+                music.stop();
+                sbg.enterState(0);
+            }
+            */
+
+            /*
+            Display next Bg
+            */
+            if (bg.pos.x < -winSize.x) {
+                bg.pos.x = 0;
+            }
+
+            /*
+            Display the wall
+            */
+            if (wall.isMoving) {
+                wall.pos.x -= delta * SPEED;
+                stats.timer += delta;
+            }
+            if (wall.pos.x < -64) {
+                wall.pos.x = 640;
+                wall.isMoving = false;
+                wall.broken = -1;
+            }
+
+            /*
+            Display the finish line
+            */
+            if (finish.isMoving) {
+                finish.pos.x -= delta*SPEED;
+            }
+            if (finish.pos.x < -64) {
+                finish.isMoving = false;
+            }
+
+            /*
+            Input Up-Down
+            */
+            if (input.isKeyPressed(Input.KEY_UP) && player.row > 0) {
+                player.row -= 1;
+                player.animate = true;
+            }
+            if (input.isKeyPressed(Input.KEY_DOWN) && player.row < 2) {
+                player.row += 1;
+                player.animate=true;
+            }
+
+            /*
+            Up-Down animation
+            */
+            if (player.animate == true) {
+                player.timer += delta;
+                if (player.pos.y < 120*(player.row+1)+10) {
+                    player.pos.y += 120*delta/player.wait;
+                }
+                if (player.pos.y > 120*(player.row+1)+10) {
+                    player.pos.y -= 120*delta/player.wait;
                 }
             }
-            
-            //coins.ltrIndex = (coins.ltrIndex + 1) % coins.letters.length;
-            coins.coinGroupTime = 0;
-        }
-        if (!coins.levelOver && !coins.coinPause && coins.coinTime > coins.coinWait) {
-            if (coins.letters[coins.ltrIndex].charAt(0) != 'X') {
-                createCoin(coins.letters[coins.ltrIndex]);
-                coins.coinTime = 0;
+            if (player.timer > player.wait) {
+                player.timer=0;
+                player.animate=false;
+                player.pos.y = 120*(player.row+1)+10;
             }
-            else {
-                wall.isMoving = true;
+
+            /*
+            Destroy the wall if on-screen
+            */
+            if (wall.pos.x<640 && wall.pos.x>-64) {
+                if (destroyWall()) PAUSED = true;
             }
-        }
-        for (Coin coin : coins.activeCoins) {
-            coin.pos.x -= delta*coin.speed;
-        }
-        coins.coinAnim += delta;
-        if (coins.coinAnim > 100) {
-            coins.coinFrame = (coins.coinFrame+1) % 4;
-            coins.coinAnim = 0;
-        }
-        destroyCoin();
-        
-        /*
-        Load Fury
-        */
-        if (input.isKeyPressed(Input.KEY_SPACE)) {
-            if (finish.pos.x < -64) {
-                if (Game.SUBLEVEL < 2) {
-                    Game.SUBLEVEL += 1;
-                    reset();
+            if (player.malus) {
+                player.malusTime += delta;
+                if (player.malusTime > player.malusWait) {
+                    player.malus = false;
+                    player.malusTime = 0;
+                }
+            }
+            if (player.bonus){
+                player.malusTime += delta;
+                if (player.malusTime > player.malusWait) {
+                    player.bonus = false;
+                    player.malusTime = 0;
+                }
+            }
+
+            /*
+            Create, move, animate and destroy coins
+            */
+            coins.coinTime += delta;
+            coins.coinGroupTime += delta;
+            if (coins.coinGroupTime > coins.coinGroupWait) {
+                coins.coinPause = !coins.coinPause;
+                if (!coins.coinPause) {
+                    System.out.println(coins.letters[coins.ltrIndex]);
+                    stats.write(coins.letters[coins.ltrIndex]);
+                    stats.reset();
+                    coins.ltrIndex += 1;
+                    if (coins.ltrIndex == coins.letters.length-1) {
+                        //sbg.enterState(Game.PAUSE);
+                        coins.levelOver = true;
+                        finish.isMoving = true;
+                    }
+                }
+
+                //coins.ltrIndex = (coins.ltrIndex + 1) % coins.letters.length;
+                coins.coinGroupTime = 0;
+            }
+            if (!coins.levelOver && !coins.coinPause && coins.coinTime > coins.coinWait) {
+                if (coins.letters[coins.ltrIndex].charAt(0) != 'X') {
+                    createCoin(coins.letters[coins.ltrIndex]);
+                    coins.coinTime = 0;
                 }
                 else {
-                    sbg.enterState(Game.MENU);
+                    wall.isMoving = true;
                 }
             }
-            else if (!player.fury && !player.furyLoad && player.furyState == player.furyStateMax) {
-                sndLoad.play();
-                player.furyLoad = true;
-                stats.hasPressed = true;
-                stats.tpsReac = stats.timer;
+            for (Coin coin : coins.activeCoins) {
+                coin.pos.x -= delta*coin.speed;
             }
-            
-        }
-        if (player.furyLoad) {
-            player.furyLoadTime += delta;
-        }
-        
-        /*
-        Initiate Fury
-        */
-        if (player.furyLoadTime > player.furyLoadWait) {
-            if (Game.ISSFX) {
-                sndFury.play();
+            coins.coinAnim += delta;
+            if (coins.coinAnim > 100) {
+                coins.coinFrame = (coins.coinFrame+1) % 4;
+                coins.coinAnim = 0;
             }
-            player.furyLoad = false;
-            player.fury = true;
-            player.furyLoadTime = 0;
-            player.furyState = 0;
+            destroyCoin();
+
+            /*
+            Load Fury
+            */
+            if (input.isKeyPressed(Input.KEY_SPACE)) {
+                if (finish.pos.x < -64) {
+                    if (Game.SUBLEVEL < 2) {
+                        Game.SUBLEVEL += 1;
+                        reset();
+                    }
+                    else {
+                        sbg.enterState(Game.MENU);
+                    }
+                }
+                else if (!player.fury && !player.furyLoad && player.furyState == player.furyStateMax) {
+                    sndLoad.play();
+                    player.furyLoad = true;
+                    stats.hasPressed = true;
+                    stats.tpsReac = stats.timer;
+                }
+
+            }
+            if (player.furyLoad) {
+                player.furyLoadTime += delta;
+            }
+
+            /*
+            Initiate Fury
+            */
+            if (player.furyLoadTime > player.furyLoadWait) {
+                if (Game.ISSFX) {
+                    sndFury.play();
+                }
+                player.furyLoad = false;
+                player.fury = true;
+                player.furyLoadTime = 0;
+                player.furyState = 0;
+            }
+            if (player.fury) {
+                player.furyTime += delta;
+                player.furyAnimTime += delta;
+            }
+
+            /*
+            Animate Fury
+            */
+            if (player.furyAnimTime > 75) {
+                player.furySpr = (player.furySpr + 1) % 4;
+                player.furyAnimTime = 0;
+            }
+            if (player.furyTime > player.furyWait ) {
+                player.fury = false;
+                player.furyTime = 0;
+            }
+                        
         }
-        if (player.fury) {
-            player.furyTime += delta;
-            player.furyAnimTime += delta;
+        else {
+            PAUSECOUNT += delta;
+            if (PAUSECOUNT > PAUSEMAX) {
+                PAUSED = false;
+                PAUSECOUNT = 0;                
+            }
         }
-        
-        /*
-        Animate Fury
-        */
-        if (player.furyAnimTime > 75) {
-            player.furySpr = (player.furySpr + 1) % 4;
-            player.furyAnimTime = 0;
-        }
-        if (player.furyTime > player.furyWait ) {
-            player.fury = false;
-            player.furyTime = 0;
-        }
+
     }
     
     public int getID() {

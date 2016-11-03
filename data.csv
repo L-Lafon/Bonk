@@ -1,1 +1,10 @@
 block,condition,letter,pressed,broken wall,coins,reaction time
+1,RAN,E,false,false,5,0.0
+1,RAN,J,false,false,8,0.0
+1,RAN,Q,true,false,5,0.0
+1,RAN,Y,false,false,8,0.0
+1,RAN,E,false,false,5,0.0
+1,RAN,B,false,false,4,0.0
+1,RAN,B,false,false,6,0.0
+1,RAN,X,false,false,1,0.0
+1,RAN,B,false,false,1,0.0
