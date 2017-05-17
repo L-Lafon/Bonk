@@ -60,6 +60,8 @@ public class Instr extends BasicGameState {
     Image bgInstr;
     Button buttonBack;
     
+    Image instructions;
+    
     /**
      * Initialise the backgroung and buttons used
      * @param gc
@@ -70,7 +72,7 @@ public class Instr extends BasicGameState {
     public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
         bgInstr = new Image("res/backgrounds/instr.png");
         
-        buttonBack = new Button(new Image("res/buttons/Back.png"), new Image("res/buttons/BackActive.png"),128,256);
+        buttonBack = new Button(new Image("res/buttons/Back.png"), new Image("res/buttons/BackActive.png"),10,10);
     }
     
     /**

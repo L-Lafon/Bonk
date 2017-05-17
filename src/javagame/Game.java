@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import org.ini4j.Wini;
 import org.newdawn.slick.*;
 import org.newdawn.slick.state.*;
@@ -28,6 +31,12 @@ public class Game extends StateBasedGame {
     public static int SUBLEVEL = 0;
     public static boolean[] LEVELSPASSED = {false,false,false,false,false};
     
+    static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+    static Date date = new Date();
+    public static final String DATE = dateFormat.format(date);
+    
+    public static int HIGHSCORE;
+        
     public static Music[] OST;
     
     /**
@@ -73,9 +82,11 @@ public class Game extends StateBasedGame {
     public static void main(String[] args) throws IOException, SlickException {
         AppGameContainer appgc;
         Wini ini = new Wini(new File("settings.ini"));
+        Wini param = new Wini(new File("levels.ini"));
         ISFULLSCREEN = Boolean.valueOf(ini.get("Display", "fullscreen"));
         ISMUSIC = Boolean.valueOf(ini.get("Sound", "music"));
         ISSFX = Boolean.valueOf(ini.get("Sound", "sfx"));
+        HIGHSCORE = Integer.valueOf(param.get("param", "highscore"));
         
         OST = new Music[] {
             new Music("res/music/thefatrat-unity.ogg"),
@@ -87,7 +98,8 @@ public class Game extends StateBasedGame {
         };
         
         try {
-            Writer file = new FileWriter("data.csv");
+            String filename = "data_"+DATE+".csv";
+            Writer file = new FileWriter(filename);
             file.write("block,condition,letter,pressed,broken wall,coins,reaction time\n");
             file.close();
         } catch (IOException iOException) {

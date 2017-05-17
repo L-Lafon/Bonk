@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import static javagame.Game.DATE;
+import static javagame.Game.HIGHSCORE;
 import org.ini4j.Wini;
 
 import org.newdawn.slick.*;
@@ -25,10 +27,12 @@ import org.newdawn.slick.state.*;
 
 public class PlayCoins extends BasicGameState {
     
-    public static final float SPEED = 0.5F;
+    public float SPEED = 0.5F;
     public int PAUSECOUNT = 0;
     public int PAUSEMAX = 2000;
     public boolean PAUSED = false;
+    public float FURYLOADINGTIME = 700F;
+    public int COINMAX = 5;
     
     class Vec2D {
         /**
@@ -84,7 +88,7 @@ public class PlayCoins extends BasicGameState {
             this.furyTime = 0F; // timer de la furie
             this.furyLoad = false;
             this.furyLoadTime = 0F; // timer de chargement de la furie
-            this.furyLoadWait = 500F; // tps de chargement de la furie
+            this.furyLoadWait = FURYLOADINGTIME; // tps de chargement de la furie
             this.furyStep = 0;
             this.furyImage = new Image("res/sprites/idee_perso_fury.png");
             this.furyAnimation = new Image[] {
@@ -107,7 +111,7 @@ public class PlayCoins extends BasicGameState {
             this.malusWait = 500F;
             this.bonus = false;
             this.furyState = 0;
-            this.furyStateMax = 5;//combien de pieces pour la furie
+            this.furyStateMax = COINMAX;//combien de pieces pour la furie
         }
     }
     
@@ -219,7 +223,7 @@ public class PlayCoins extends BasicGameState {
             this.coinGroupTime = 0;
             this.coinGroupWait = 1000;
             this.coinCount = 0;
-            this.coinMax = 5;
+            this.coinMax = COINMAX;
             this.ltrIndex = 0;
             this.levelOver = false;
         }
@@ -271,7 +275,7 @@ public class PlayCoins extends BasicGameState {
          */
         public void write(String letter) {
             try {
-                Writer file = new BufferedWriter(new FileWriter("data.csv", true));
+                Writer file = new BufferedWriter(new FileWriter("data_"+DATE+".csv", true));
                 file.append(Integer.toString(Game.LEVEL)+","
                             +names[Game.SUBLEVEL]+","
                             +letter+","
@@ -349,6 +353,10 @@ public class PlayCoins extends BasicGameState {
             Wini lvlIni = new Wini(new File("levels.ini"));
             names = lvlIni.get(Integer.toString(Game.LEVEL), "order").split(",");
             letters = lvlIni.get(Integer.toString(Game.LEVEL), names[Game.SUBLEVEL]).split("");
+            SPEED = Float.parseFloat(lvlIni.get("param", "speed"));
+            FURYLOADINGTIME = Float.parseFloat(lvlIni.get("param", "fury_loading_time"));
+            COINMAX = Integer.parseInt(lvlIni.get("param", "coins_max"));
+            PAUSEMAX = Integer.parseInt(lvlIni.get("param", "pause_time"));
         } catch (IOException ex) {
             letters = "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE".split("");
             Logger.getLogger(PlayCoins.class.getName()).log(Level.SEVERE, null, ex);
@@ -578,11 +586,12 @@ public class PlayCoins extends BasicGameState {
         
         hud.front.draw();
         
-        hud.coin.draw(384,40);
+        hud.coin.draw(384,30);
         
         g.setFont(font);
         g.setColor(Color.yellow);
-        g.drawString("x " + Integer.toString(player.score),450,48);
+        g.drawString("x " + Integer.toString(player.score),450,38);
+        g.drawString("Best : "+Integer.toString(HIGHSCORE), 450, 68);
         
         if (player.malus) {
             imgMalus.draw(player.pos.x + 150,player.pos.y + 25);
@@ -594,8 +603,17 @@ public class PlayCoins extends BasicGameState {
         if (finish.pos.x < -64) {
             drawString(g, "Congratulations !", 200, 200, font, Color.yellow, Color.black, 2);
             if (Game.SUBLEVEL == 2) {
-                drawString(g, "Press SPACE to go back to", 200, 300, font, Color.yellow, Color.black, 2);
-                drawString(g, "the main menu.", 200, 350, font, Color.yellow, Color.black, 2);
+                drawString(g, "Press SPACE to go back to", 200, 350, font, Color.yellow, Color.black, 2);
+                drawString(g, "the main menu.", 200, 400, font, Color.yellow, Color.black, 2);
+                
+                
+                if (player.score > HIGHSCORE) {
+                    drawString(g, "YOU BEAT THE HIGHSCORE !", 200, 300, font, Color.yellow, Color.black, 2);
+                }
+                else {
+                    drawString(g, "Only "+Integer.toString(HIGHSCORE-player.score+1)+" more coins to beat the highscore", 200, 300, font, Color.yellow, Color.black, 2);
+                }
+                
             }
             else {
                 drawString(g, "Press SPACE when you're ready for", 200, 300, font, Color.yellow, Color.black, 2);
@@ -728,15 +746,18 @@ public class PlayCoins extends BasicGameState {
             if (coins.coinGroupTime > coins.coinGroupWait) {
                 coins.coinPause = !coins.coinPause;
                 if (!coins.coinPause) {
-                    System.out.println(coins.letters[coins.ltrIndex]);
-                    stats.write(coins.letters[coins.ltrIndex]);
-                    stats.reset();
-                    coins.ltrIndex += 1;
-                    if (coins.ltrIndex == coins.letters.length-1) {
+                    //System.out.println(coins.letters[coins.ltrIndex]);
+                    if (coins.ltrIndex < coins.letters.length-1)
+                    {
+                        stats.write(coins.letters[coins.ltrIndex]);
+                        stats.reset();
+                        coins.ltrIndex += 1;
+                    }
+                    else {
                         //sbg.enterState(Game.PAUSE);
                         coins.levelOver = true;
                         finish.isMoving = true;
-                    }
+                    }                    
                 }
 
                 //coins.ltrIndex = (coins.ltrIndex + 1) % coins.letters.length;
@@ -766,11 +787,22 @@ public class PlayCoins extends BasicGameState {
             */
             if (input.isKeyPressed(Input.KEY_SPACE)) {
                 if (finish.pos.x < -64) {
+                    
                     if (Game.SUBLEVEL < 2) {
                         Game.SUBLEVEL += 1;
                         reset();
                     }
                     else {
+                        if (player.score > HIGHSCORE) {
+                            HIGHSCORE = player.score;
+                            try {
+                                Wini ini = new Wini(new File("levels.ini"));
+                                ini.put("param", "highscore", HIGHSCORE);
+                                ini.store();
+                            } catch (IOException ex) {
+                                Logger.getLogger(PlayCoins.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
                         sbg.enterState(Game.MENU);
                     }
                 }
